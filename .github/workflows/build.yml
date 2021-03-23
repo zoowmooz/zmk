@@ -37,6 +37,7 @@ jobs:
           - helix_right
           - iris_left
           - iris_right
+          - jian_ns
           - jian_left
           - jian_right
           - jorne_left
