@@ -185,115 +185,32 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* END COLLECTION */
     HID_MI_COLLECTION_END,
 
-    /* USAGE_PAGE (Generic Desktop) */
-    HID_GI_USAGE_PAGE,
-    HID_USAGE_GD,
-    /* USAGE (Mouse) */
-    HID_LI_USAGE,
-    HID_USAGE_GD_MOUSE,
-    /* COLLECTION (Application) */
-    HID_MI_COLLECTION,
-    COLLECTION_APPLICATION,
-    /* REPORT ID (4) */
-    HID_GI_REPORT_ID,
-    0x04,
-    /* USAGE (Pointer) */
-    HID_LI_USAGE,
-    HID_USAGE_GD_POINTER,
-    /* COLLECTION (Physical) */
-    HID_MI_COLLECTION,
-    COLLECTION_PHYSICAL,
-    /* USAGE_PAGE (Button) */
-    HID_GI_USAGE_PAGE,
-    HID_USAGE_BUTTON,
-    /* USAGE_MINIMUM (0x1) (button 1?) */
-    HID_LI_USAGE_MIN(1),
-    0x1,
-    /* USAGE_MAXIMUM (0x10) (button 5? Buttons up to 8 still work) */
-    HID_LI_USAGE_MAX(1),
-    0x10,
-    /* LOGICAL_MINIMUM (0) */
-    HID_GI_LOGICAL_MIN(1),
-    0x00,
-    /* LOGICAL_MAXIMUM (1) */
-    HID_GI_LOGICAL_MAX(1),
-    0x01,
-    /* REPORT_SIZE (1) */
-    HID_GI_REPORT_SIZE,
-    0x01,
-    /* REPORT_COUNT (16) */
-    HID_GI_REPORT_COUNT,
-    0x10,
-    /* INPUT (Data,Var,Abs) */
-    HID_MI_INPUT,
-    0x06, /* mouse relative movement */
-    /* USAGE_PAGE (Generic Desktop) */
-    HID_GI_USAGE_PAGE,
-    HID_USAGE_GD,
-    /* LOGICAL_MINIMUM (-32767) */
-    HID_GI_LOGICAL_MIN(2),
-    0x01,
-    0x80,
-    /* LOGICAL_MAXIMUM (32767) */
-    HID_GI_LOGICAL_MAX(2),
-    0xFF,
-    0x7F,
-    /* REPORT_SIZE (16) */
-    HID_GI_REPORT_SIZE,
-    0x10,
-    /* REPORT_COUNT (2) */
-    HID_GI_REPORT_COUNT,
-    0x02,
-    /* USAGE (X) */
-    HID_LI_USAGE,
-    HID_USAGE_GD_X,
-    /* USAGE (Y) */
-    HID_LI_USAGE,
-    HID_USAGE_GD_Y,
-    /* Input (Data,Var,Rel) */
-    HID_MI_INPUT,
-    0x06,
-    /* LOGICAL_MINIMUM (-127) */
-    HID_GI_LOGICAL_MIN(1),
-    0x81,
-    /* LOGICAL_MAXIMUM (127) */
-    HID_GI_LOGICAL_MAX(1),
-    0x7F,
-    /* REPORT_SIZE (8) */
-    HID_GI_REPORT_SIZE,
-    0x08,
-    /* REPORT_COUNT (1) */
-    HID_GI_REPORT_COUNT,
-    0x01,
-    /* USAGE (Wheel) */
-    HID_LI_USAGE,
-    HID_USAGE_GD_WHEEL,
-    /* Input (Data,Var,Rel) */
-    HID_MI_INPUT,
-    0x06,
-    /* USAGE_PAGE (Consumer) */ // Horizontal wheel
-    HID_GI_USAGE_PAGE,
-    HID_USAGE_CONSUMER,
-    /* USAGE (AC Pan) */
-    0x0A,
-    0x38,
-    0x02,
-    /* LOGICAL_MINIMUM (-127) */
-    HID_GI_LOGICAL_MIN(1),
-    0x81,
-    /* LOGICAL_MAXIMUM (127) */
-    HID_GI_LOGICAL_MAX(1),
-    0x7F,
-    /* REPORT_COUNT (1) */
-    HID_GI_REPORT_COUNT,
-    0x01,
-    /* Input (Data,Var,Rel) */
-    HID_MI_INPUT,
-    0x06,
-    /* END COLLECTION */
-    HID_MI_COLLECTION_END,
-    /* END COLLECTION */
-    HID_MI_COLLECTION_END,
+    0x05, 0x01, /* Usage Page (Generic Desktop Ctrls) */
+    0x09, 0x02, /* Usage (Mouse) */
+    0xA1, 0x01, /* Collection (Application) */
+    0x09, 0x01, /*   Usage (Pointer) */
+    0xA1, 0x00, /*   Collection (Physical) */
+    0x05, 0x09, /*     Usage Page (Button) */
+    0x19, 0x01, /*     Usage Minimum (0x01) */
+    0x29, 0x03, /*     Usage Maximum (0x03) */
+    0x15, 0x00, /*     Logical Minimum (0) */
+    0x25, 0x01, /*     Logical Maximum (1) */
+    0x95, 0x03, /*     Report Count (3) */
+    0x75, 0x01, /*     Report Size (1) */
+    0x81, 0x02, /*     Input (Data,Var,Abs,No Wrap,Linear,...) */
+    0x95, 0x01, /*     Report Count (1) */
+    0x75, 0x05, /*     Report Size (5) */
+    0x81, 0x03, /*     Input (Const,Var,Abs,No Wrap,Linear,...) */
+    0x05, 0x01, /*     Usage Page (Generic Desktop Ctrls) */
+    0x09, 0x30, /*     Usage (X) */
+    0x09, 0x31, /*     Usage (Y) */
+    0x15, 0x81, /*     Logical Minimum (129) */
+    0x25, 0x7F, /*     Logical Maximum (127) */
+    0x75, 0x08, /*     Report Size (8) */
+    0x95, 0x02, /*     Report Count (2) */
+    0x81, 0x06, /*     Input (Data,Var,Rel,No Wrap,Linear,...) */
+    0xC0,       /*   End Collection */
+    0xC0,       /* End Collection */
 };
 
 // struct zmk_hid_boot_report
@@ -333,10 +250,8 @@ struct zmk_hid_consumer_report {
 
 struct zmk_hid_mouse_report_body {
     zmk_mouse_button_flags_t buttons;
-    int16_t x;
-    int16_t y;
-    int8_t wheel_vert;
-    int8_t wheel_hor;
+    int8_t x;
+    int8_t y;
 } __packed;
 
 struct zmk_hid_mouse_report {
@@ -363,10 +278,6 @@ int zmk_hid_mouse_button_press(zmk_mouse_button_t button);
 int zmk_hid_mouse_button_release(zmk_mouse_button_t button);
 int zmk_hid_mouse_buttons_press(zmk_mouse_button_flags_t buttons);
 int zmk_hid_mouse_buttons_release(zmk_mouse_button_flags_t buttons);
-int zmk_hid_mouse_movement_press(int16_t x, int16_t y);
-int zmk_hid_mouse_movement_release(int16_t x, int16_t y);
-int zmk_hid_mouse_wheel_press(int8_t hor, int8_t vert);
-int zmk_hid_mouse_wheel_release(int8_t hor, int8_t vert);
 void zmk_hid_mouse_clear();
 
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report();
