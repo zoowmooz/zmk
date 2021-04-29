@@ -131,7 +131,22 @@ static int send_consumer_report() {
     }
 }
 
-static int send_mouse_report() {
+int zmk_endpoints_send_report(uint16_t usage_page) {
+
+    LOG_DBG("usage page 0x%02X", usage_page);
+    switch (usage_page) {
+    case HID_USAGE_KEY:
+        return send_keyboard_report();
+    case HID_USAGE_CONSUMER:
+        return send_consumer_report();
+    default:
+        LOG_ERR("Unsupported usage page %d", usage_page);
+        return -ENOTSUP;
+    }
+}
+
+int zmk_endpoints_send_mouse_report() {
+    LOG_ERR("SENDING MOUSE REPORT");
     struct zmk_hid_mouse_report *mouse_report = zmk_hid_get_mouse_report();
 
     switch (current_endpoint) {
@@ -147,55 +162,6 @@ static int send_mouse_report() {
 
 #if IS_ENABLED(CONFIG_ZMK_BLE)
         case ZMK_ENDPOINT_BLE: {
-        int err = zmk_hog_send_mouse_report(&mouse_report->body);
-        if (err) {
-            LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
-        }
-        return err;
-    }
-#endif /* IS_ENABLED(CONFIG_ZMK_BLE) */
-
-    default:
-        LOG_ERR("Unsupported endpoint %d", current_endpoint);
-        return -ENOTSUP;
-    }
-}
-
-int zmk_endpoints_send_report(uint16_t usage_page) {
-
-    LOG_DBG("usage page 0x%02X", usage_page);
-    switch (usage_page) {
-    case HID_USAGE_KEY:
-        return send_keyboard_report();
-    case HID_USAGE_CONSUMER:
-        return send_consumer_report();
-    case HID_USAGE_GD:
-        return send_mouse_report();
-    default:
-        LOG_ERR("Unsupported usage page %d", usage_page);
-        return -ENOTSUP;
-    }
-}
-
-int zmk_endpoints_send_mouse_report() {
-    /* for silence
-    LOG_ERR("SENDING MOUSE REPORT");
-    */
-    struct zmk_hid_mouse_report *mouse_report = zmk_hid_get_mouse_report();
-
-    switch (current_endpoint) {
-#if IS_ENABLED(CONFIG_ZMK_USB)
-    case ZMK_ENDPOINT_USB: {
-        int err = zmk_usb_hid_send_report((uint8_t *)mouse_report, sizeof(*mouse_report));
-        if (err) {
-            LOG_ERR("FAILED TO SEND OVER USB: %d", err);
-        }
-        return err;
-    }
-#endif /* IS_ENABLED(CONFIG_ZMK_USB) */
-
-#if IS_ENABLED(CONFIG_ZMK_BLE)
-    case ZMK_ENDPOINT_BLE: {
         int err = zmk_hog_send_mouse_report(&mouse_report->body);
         if (err) {
             LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
