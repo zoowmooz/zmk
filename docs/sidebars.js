@@ -57,7 +57,10 @@ module.exports = {
         type: "category",
         label: "Guides",
         collapsed: false,
-        items: ["development/new-shield"],
+        items: [
+          "development/new-shield",
+          "development/hardware-metadata-files",
+        ],
       },
     ],
   },
