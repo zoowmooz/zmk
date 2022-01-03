@@ -5,9 +5,27 @@ sidebar_label: Mouse Emulation
 
 ## Summary
 
-Mouse emulation behaviors send mouse movements, button presses or wheel actions.
+Mouse emulation behaviors send mouse movements, button presses or scroll actions.
 
 Please view [`dt-bindings/zmk/mouse.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/mouse.h) for a comprehensive list of signals.
+
+## Configuration options
+
+This feature should be enabled via a config option:
+
+```
+CONFIG_ZMK_MOUSE=y
+```
+
+This option enables several others.
+
+### Dedicated thread processing
+
+`CONFIG_ZMK_MOUSE_WORK_QUEUE_DEDICATED` is enabled by default and separates the processing of mouse signals into a dedicated thread, significantly improving performance.
+
+### Tick rate configuration
+
+`CONFIG_ZMK_MOUSE_TICK_DURATION` sets the tick rate for mouse polling. It is set to 8 ms. by default.
 
 ## Keycode Defines
 
@@ -19,7 +37,7 @@ provided by ZMK near the top:
 #include <dt-bindings/zmk/mouse.h>
 ```
 
-Doing so allows using a set of defines such as `MOVE_UP`, `MOVE_DOWN`, `LCLK` and `WHEEL_UP` with these behaviors.
+Doing so allows using a set of defines such as `MOVE_UP`, `MOVE_DOWN`, `LCLK` and `SCROLL_UP` with these behaviors.
 
 ## Mouse Button Press
 
@@ -52,7 +70,7 @@ Example:
 &mmv MOVE_UP
 ```
 
-## Mouse Wheel
+## Mouse Scrolling
 
 This behaviour is used to scroll, both horizontally and vertically.
 
@@ -65,5 +83,28 @@ This behaviour is used to scroll, both horizontally and vertically.
 Example:
 
 ```
-&mwh WHEEL_UP
+&mwh SCROLL_UP
+```
+
+## Acceleration
+
+Both mouse movement and scrolling have independently configurable acceleration profiles with three parameters: delay before movement, time to max speed and the acceleration exponent.
+The exponent is usually set to 0 for constant speed, 1 for uniform acceleration or 2 for uniform jerk.
+
+These profiles can be configured inside your keymap:
+
+```
+&mmv {
+    time-to-max-speed-ms = <500>;
+};
+
+&mwh {
+    acceleration-exponent=<1>;
+};
+
+/ {
+    keymap {
+        ...
+    };
+};
 ```

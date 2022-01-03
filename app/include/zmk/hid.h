@@ -16,10 +16,6 @@
 
 #define COLLECTION_REPORT 0x03
 
-#define ZMK_HID_KEYBOARD_NKRO_SIZE 6
-
-#define ZMK_HID_CONSUMER_NKRO_SIZE 6
-
 static const uint8_t zmk_hid_report_desc[] = {
     /* USAGE_PAGE (Generic Desktop) */
     HID_GI_USAGE_PAGE,
@@ -75,6 +71,30 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* USAGE_PAGE (Keyboard/Keypad) */
     HID_GI_USAGE_PAGE,
     HID_USAGE_KEY,
+
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
+    /* LOGICAL_MINIMUM (0) */
+    HID_GI_LOGICAL_MIN(1),
+    0x00,
+    /* LOGICAL_MAXIMUM (1) */
+    HID_GI_LOGICAL_MAX(1),
+    0x01,
+    /* USAGE_MINIMUM (Reserved) */
+    HID_LI_USAGE_MIN(1),
+    0x00,
+    /* USAGE_MAXIMUM (Keyboard Application) */
+    HID_LI_USAGE_MAX(1),
+    ZMK_HID_KEYBOARD_NKRO_MAX_USAGE,
+    /* REPORT_SIZE (8) */
+    HID_GI_REPORT_SIZE,
+    0x01,
+    /* REPORT_COUNT (6) */
+    HID_GI_REPORT_COUNT,
+    ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1,
+    /* INPUT (Data,Ary,Abs) */
+    HID_MI_INPUT,
+    0x02,
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
     /* LOGICAL_MINIMUM (0) */
     HID_GI_LOGICAL_MIN(1),
     0x00,
@@ -90,12 +110,15 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* REPORT_SIZE (1) */
     HID_GI_REPORT_SIZE,
     0x08,
-    /* REPORT_COUNT (ZMK_HID_KEYBOARD_NKRO_SIZE) */
+    /* REPORT_COUNT (CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE) */
     HID_GI_REPORT_COUNT,
-    ZMK_HID_KEYBOARD_NKRO_SIZE,
+    CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE,
     /* INPUT (Data,Ary,Abs) */
     HID_MI_INPUT,
     0x00,
+#else
+#error "A proper HID report type must be selected"
+#endif
 
     /* END_COLLECTION */
     HID_MI_COLLECTION_END,
@@ -114,6 +137,24 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* USAGE_PAGE (Consumer) */
     HID_GI_USAGE_PAGE,
     HID_USAGE_CONSUMER,
+
+#if IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC)
+    /* LOGICAL_MINIMUM (0) */
+    HID_GI_LOGICAL_MIN(1),
+    0x00,
+    /* LOGICAL_MAXIMUM (0xFFFF) */
+    HID_GI_LOGICAL_MAX(1),
+    0xFF,
+    HID_LI_USAGE_MIN(1),
+    0x00,
+    /* USAGE_MAXIMUM (0xFFFF) */
+    HID_LI_USAGE_MAX(1),
+    0xFF,
+    /* INPUT (Data,Ary,Abs) */
+    /* REPORT_SIZE (8) */
+    HID_GI_REPORT_SIZE,
+    0x08,
+#elif IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_FULL)
     /* LOGICAL_MINIMUM (0) */
     HID_GI_LOGICAL_MIN(1),
     0x00,
@@ -131,9 +172,12 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* REPORT_SIZE (16) */
     HID_GI_REPORT_SIZE,
     0x10,
-    /* REPORT_COUNT (ZMK_HID_CONSUMER_NKRO_SIZE) */
+#else
+#error "A proper consumer HID report usage range must be selected"
+#endif
+    /* REPORT_COUNT (CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE) */
     HID_GI_REPORT_COUNT,
-    ZMK_HID_CONSUMER_NKRO_SIZE,
+    CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE,
     HID_MI_INPUT,
     0x00,
     /* END COLLECTION */
@@ -198,7 +242,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* REPORT_COUNT (2) */
     HID_GI_REPORT_COUNT,
     0x02,
-    /* USAGE (X) */
+    /* USAGE (X) */ // Vertical scroll
     HID_LI_USAGE,
     HID_USAGE_GD_X,
     /* USAGE (Y) */
@@ -225,7 +269,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* Input (Data,Var,Rel) */
     HID_MI_INPUT,
     0x06,
-    /* USAGE_PAGE (Consumer) */ // Horizontal wheel
+    /* USAGE_PAGE (Consumer) */ // Horizontal scroll
     HID_GI_USAGE_PAGE,
     HID_USAGE_CONSUMER,
     /* USAGE (AC Pan) */
@@ -260,7 +304,11 @@ static const uint8_t zmk_hid_report_desc[] = {
 struct zmk_hid_keyboard_report_body {
     zmk_mod_flags_t modifiers;
     uint8_t _reserved;
-    uint8_t keys[ZMK_HID_KEYBOARD_NKRO_SIZE];
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
+    uint8_t keys[(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1) / 8];
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
+    uint8_t keys[CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE];
+#endif
 } __packed;
 
 struct zmk_hid_keyboard_report {
@@ -269,7 +317,11 @@ struct zmk_hid_keyboard_report {
 } __packed;
 
 struct zmk_hid_consumer_report_body {
-    uint16_t keys[ZMK_HID_CONSUMER_NKRO_SIZE];
+#if IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC)
+    uint8_t keys[CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE];
+#elif IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_FULL)
+    uint16_t keys[CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE];
+#endif
 } __packed;
 
 struct zmk_hid_consumer_report {
@@ -281,8 +333,8 @@ struct zmk_hid_mouse_report_body {
     zmk_mouse_button_flags_t buttons;
     int16_t x;
     int16_t y;
-    int8_t wheel_vert;
-    int8_t wheel_hor;
+    int8_t scroll_y;
+    int8_t scroll_x;
 } __packed;
 
 struct zmk_hid_mouse_report {
@@ -309,10 +361,10 @@ int zmk_hid_mouse_button_press(zmk_mouse_button_t button);
 int zmk_hid_mouse_button_release(zmk_mouse_button_t button);
 int zmk_hid_mouse_buttons_press(zmk_mouse_button_flags_t buttons);
 int zmk_hid_mouse_buttons_release(zmk_mouse_button_flags_t buttons);
-int zmk_hid_mouse_movement_press(int16_t x, int16_t y);
-int zmk_hid_mouse_movement_release(int16_t x, int16_t y);
-int zmk_hid_mouse_wheel_press(int8_t hor, int8_t vert);
-int zmk_hid_mouse_wheel_release(int8_t hor, int8_t vert);
+void zmk_hid_mouse_movement_set(int16_t x, int16_t y);
+void zmk_hid_mouse_scroll_set(int8_t x, int8_t y);
+void zmk_hid_mouse_movement_update(int16_t x, int16_t y);
+void zmk_hid_mouse_scroll_update(int8_t x, int8_t y);
 void zmk_hid_mouse_clear();
 
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report();

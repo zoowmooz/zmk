@@ -16,6 +16,7 @@
 #include <zmk/event_manager.h>
 #include <zmk/events/ble_active_profile_changed.h>
 #include <zmk/events/usb_conn_state_changed.h>
+#include <zmk/events/endpoint_selection_changed.h>
 
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -145,9 +146,6 @@ int zmk_endpoints_send_report(uint16_t usage_page) {
 }
 
 int zmk_endpoints_send_mouse_report() {
-    /* for silence
-    LOG_ERR("SENDING MOUSE REPORT");
-    */
     struct zmk_hid_mouse_report *mouse_report = zmk_hid_get_mouse_report();
 
     switch (current_endpoint) {
@@ -163,7 +161,11 @@ int zmk_endpoints_send_mouse_report() {
 
 #if IS_ENABLED(CONFIG_ZMK_BLE)
     case ZMK_ENDPOINT_BLE: {
+#if IS_ENABLED(CONFIG_ZMK_MOUSE_WORK_QUEUE_DEDICATED)
+        int err = zmk_hog_send_mouse_report_direct(&mouse_report->body);
+#else
         int err = zmk_hog_send_mouse_report(&mouse_report->body);
+#endif
         if (err) {
             LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
         }
@@ -276,6 +278,9 @@ static void update_current_endpoint() {
 
         current_endpoint = new_endpoint;
         LOG_INF("Endpoint changed: %d", current_endpoint);
+
+        ZMK_EVENT_RAISE(new_zmk_endpoint_selection_changed(
+            (struct zmk_endpoint_selection_changed){.endpoint = current_endpoint}));
     }
 }
 

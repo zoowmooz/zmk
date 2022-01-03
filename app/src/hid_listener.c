@@ -11,8 +11,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/event_manager.h>
 #include <zmk/events/keycode_state_changed.h>
-#include <zmk/events/mouse_state_changed.h>
-#include <zmk/events/modifiers_state_changed.h>
 #include <zmk/hid.h>
 #include <dt-bindings/zmk/hid_usage_pages.h>
 #include <zmk/endpoints.h>
@@ -134,15 +132,6 @@ int hid_listener(const zmk_event_t *eh) {
             hid_listener_keycode_pressed(kc_ev);
         } else {
             hid_listener_keycode_released(kc_ev);
-        }
-        return 0;
-    }
-    const struct zmk_mouse_state_changed *ms_ev = as_zmk_mouse_state_changed(eh);
-    if (ms_ev) {
-        if (ms_ev->state) {
-            hid_listener_mouse_pressed(ms_ev);
-        } else {
-            hid_listener_mouse_released(ms_ev);
         }
         return 0;
     }
