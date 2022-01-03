@@ -180,7 +180,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     0x10,
     /* INPUT (Data,Var,Abs) */
     HID_MI_INPUT,
-    0x02,
+    0x06, /* mouse relative movement */
     /* USAGE_PAGE (Generic Desktop) */
     HID_GI_USAGE_PAGE,
     HID_USAGE_GD,
