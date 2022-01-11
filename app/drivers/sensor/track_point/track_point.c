@@ -151,7 +151,7 @@ static int tp_sample_fetch(const struct device *dev, enum sensor_channel chan) {
 
     // Disable power GPIO if present
     if (drv_data->gpio) {
-      //LOG_DBG("kanno power GPIO %d OFF",drv_cfg->power_gpios.pin);
+      //LOG_DBG("power GPIO %d OFF",drv_cfg->power_gpios.pin);
       //int rc2 = gpio_pin_set(drv_data->gpio, drv_cfg->power_gpios.pin, val_holdvref);
 //        int rc2 = gpio_pin_set(drv_data->gpio, drv_cfg->power_gpios.pin, 0);
 //        if (rc2 != 0) {
@@ -174,7 +174,7 @@ static int tp_sample_fetch(const struct device *dev, enum sensor_channel chan) {
     /*
     LOG_DBG("gpio raw");
     for (int i=0;i<48;){
-      LOG_DBG("kanno+%2d:%d %d %d %d %d %d %d %d ",i,
+      LOG_DBG("+%2d:%d %d %d %d %d %d %d %d ",i,
 	      gpio_pin_get_raw(drv_data->gpio,i++),
 	      gpio_pin_get_raw(drv_data->gpio,i++),
 	      gpio_pin_get_raw(drv_data->gpio,i++),
@@ -192,7 +192,7 @@ static int tp_sample_fetch(const struct device *dev, enum sensor_channel chan) {
 static int tp_channel_get(const struct device *dev, enum sensor_channel chan,
                            struct sensor_value *val) {
     struct tp_data *drv_data = dev->data;
-    //LOG_DBG("kanno tp_channel_get:name=%s chan=%d",dev->name, chan);
+    //LOG_DBG("tp_channel_get:name=%s chan=%d",dev->name, chan);
     
     switch (chan) {
     case SENSOR_CHAN_ACCEL_X:
@@ -236,9 +236,9 @@ static int tp_init(const struct device *dev) {
     int rc = 0;
 
     if (drv_cfg->power_gpios.label) {
-      //LOG_ERR("kanno power_gpios.label %s", drv_cfg->power_gpios.label);
-      //LOG_ERR("kanno power_gpios.pin   %d", drv_cfg->power_gpios.pin);
-      //LOG_ERR("kanno power_gpios.flag  %x", drv_cfg->power_gpios.flags);
+      //LOG_ERR(" power_gpios.label %s", drv_cfg->power_gpios.label);
+      //LOG_ERR(" power_gpios.pin   %d", drv_cfg->power_gpios.pin);
+      //LOG_ERR(" power_gpios.flag  %x", drv_cfg->power_gpios.flags);
       drv_data->gpio = device_get_binding(drv_cfg->power_gpios.label);
         if (drv_data->gpio == NULL) {
             LOG_ERR("Failed to get GPIO %s", drv_cfg->power_gpios.label);
@@ -278,7 +278,7 @@ static int tp_init(const struct device *dev) {
 	for(int i=0;i<48;i++) {
 	  rc = gpio_pin_configure(drv_data->gpio, i, GPIO_INPUT|GPIO_PULL_UP);
 	  if (rc != 0) {
-            LOG_ERR("kanno Failed to control test input %u: %d", i, rc);
+            LOG_ERR(" Failed to control test input %u: %d", i, rc);
             return rc;
 	  }
 	}

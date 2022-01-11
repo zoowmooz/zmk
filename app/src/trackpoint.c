@@ -1,10 +1,5 @@
 /*
-CONFIG_EC11_TRIGGER
-CONFIG_EC11
-EC11_CONFIG
-*/
-/*
- * Copyright (c) 2020 The ZMK Contributors
+ * Copyright (c) 2022 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -24,7 +19,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/event_manager.h>
 //#include <zmk/trackpoint.h>
 //#include <zmk/events/trackpoint_state_changed.h>
-#include <zmk/events/mouse_state_changed.h>
+#include <zmk/hid.h>
+//#include <zmk/events/mouse_state_changed.h>
 #include <zmk/endpoints.h>
 
 const struct device *trackpoint;
@@ -35,7 +31,7 @@ const struct device *trackpoint;
 
 static int zmk_trackpoint_update(const struct device *trackpoint) {
     struct sensor_value state_of_charge;
-    //LOG_DBG("kanno zmk_trackpoint_update:name=%s",trackpoint->name);
+    //LOG_DBG("zmk_trackpoint_update:name=%s",trackpoint->name);
     
     int rc = sensor_sample_fetch_chan(trackpoint, SENSOR_CHAN_ACCEL_XYZ);
     if (rc != 0) {
