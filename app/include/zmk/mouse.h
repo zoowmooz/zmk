@@ -28,4 +28,3 @@ struct vector2d {
 
 struct k_work_q *zmk_mouse_work_q();
 int zmk_mouse_init();
-int zmk_mouse_init();

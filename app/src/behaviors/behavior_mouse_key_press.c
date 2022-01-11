@@ -46,4 +46,3 @@ static const struct behavior_driver_api behavior_mouse_key_press_driver_api = {
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
-#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
