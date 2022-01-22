@@ -1,0 +1,8 @@
+# Copyright (c) 2022 KyouTansan
+# SPDX-License-Identifier: MIT
+
+config SHIELD_WINGS42_SG_LEFT
+	def_bool $(shields_list_contains,wings42_sg_left)
+
+config SHIELD_WINGS42_SG_RIGHT
+	def_bool $(shields_list_contains,wings42_sg_right)
