@@ -7,10 +7,10 @@
 #include "wings42_sg.dtsi"
 
 &default_transform {
-	col-offset = <6>;
+	col-offset = <10>;
 };
 
-&kscan {
+&kscan1 {
 	col-gpios
 		= <&pro_micro   11 GPIO_ACTIVE_HIGH> /* extended */
 		, <&pro_micro   12 GPIO_ACTIVE_HIGH> /* extended */
@@ -19,6 +19,16 @@
 		, <&pro_micro   15 GPIO_ACTIVE_HIGH>
 		, <&pro_micro   14 GPIO_ACTIVE_HIGH>
 		;
+};
+
+&direct_rsw {
+	debounce-period = <50>;
+	input-gpios = <&pro_micro 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+	status = "okay";
+};
+
+&direct_rre {
+	status = "disabled";
 };
 
 &right_encoder {
