@@ -6,7 +6,11 @@
 
 #include "wings42_sg.dtsi"
 
-&kscan {
+&default_transform {
+	col-offset = <0>;
+};
+
+&kscan1 {
 	col-gpios
 		= <&pro_micro   14 GPIO_ACTIVE_HIGH>
 		, <&pro_micro   15 GPIO_ACTIVE_HIGH>
@@ -15,4 +19,22 @@
 		, <&pro_micro   20 GPIO_ACTIVE_HIGH>
 		, <&pro_micro   21 GPIO_ACTIVE_HIGH>
 		;
+};
+
+&kscan2 {
+	/* rows = <1>; */
+	/* columns = <1>; */
+	diode-direction = "col2row";
+	col-gpios = <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+	row-gpios = <&pro_micro 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+	status = "okay";
+};
+
+&kscan3 {
+	/* rows = <1>; */
+	/* columns = <1>; */
+	diode-direction = "col2row";
+	col-gpios = <&pro_micro 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+	row-gpios = <&pro_micro 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+	status = "okay";
 };
