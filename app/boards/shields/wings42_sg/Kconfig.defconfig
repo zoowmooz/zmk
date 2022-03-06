@@ -20,7 +20,7 @@ if SHIELD_WINGS42_SG_LEFT || SHIELD_WINGS42_SG_RIGHT
 config ZMK_SPLIT
 	default y
 
-# config  ZMK_KSCAN_COMPOSITE_DRIVER
-#	default y
+config ZMK_KSCAN_COMPOSITE_DRIVER
+	default y
 
 endif

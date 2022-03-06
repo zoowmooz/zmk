@@ -1,15 +1,9 @@
 /*
  * Copyright (c) 2022 KyouTansan
- *
  * SPDX-License-Identifier: MIT
  */
-
 #include "wings42_sg.dtsi"
-
-&default_transform {
-	col-offset = <10>;
-};
-
+&default_transform {	col-offset =    <8>;};
 &kscan1 {
 	col-gpios
 		= <&pro_micro   11 GPIO_ACTIVE_HIGH> /* extended */
@@ -20,18 +14,17 @@
 		, <&pro_micro   14 GPIO_ACTIVE_HIGH>
 		;
 };
-
-&direct_rsw {
+//&direct_rre {
+//	status = "disabled";
+//};
+&direct_scan {
 	debounce-period = <50>;
-	input-gpios = <&pro_micro 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+	input-gpios = <&pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 	status = "okay";
 };
-
-&direct_rre {
-	status = "disabled";
-};
-
 &right_encoder {
+	a-gpios = <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+	b-gpios = <&pro_micro 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+	resolution = <2>;
 	status = "okay";
 };
-
