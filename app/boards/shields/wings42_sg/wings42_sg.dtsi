@@ -24,10 +24,7 @@ RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)  RC(2,6) RC(3,7)  RC(2,8) RC(2,9
 		label = "KSCAN0";
 		rows = <4>;
 		columns = <15>;
-		matrix1: matrix1 {	kscan = <&kscan1>;				};
-//		matrix2: matrix2 {	kscan = <&kscan2>;				};
-//		matrix3: matrix3 {	kscan = <&kscan3>;				};
-		direct1: direct1 {	kscan = <&direct_scan>;	column-offset = <6>;	};
+		matrix1: matrix1 {	kscan = <&kscan1>;	column-offset = <0>;	};
 	};
 	kscan1: kscan1 {
 		compatible = "zmk,kscan-gpio-matrix";
@@ -40,16 +37,16 @@ RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)  RC(2,6) RC(3,7)  RC(2,8) RC(2,9
 			, <&pro_micro 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 			;
 	};
-//	kscan2: kscan2 {
-//		compatible = "zmk,kscan-gpio-matrix";
-//		label = "KSCAN2";
-//		status = "disabled";
-//	};
-//	kscan3: kscan3 {
-//		compatible = "zmk,kscan-gpio-matrix";
-//		label = "KSCAN3";
-//		status = "disabled";
-//	};
+	kscan2: kscan2 {
+		compatible = "zmk,kscan-gpio-matrix";
+		label = "KSCAN2";
+		status = "disabled";
+	};
+	kscan3: kscan3 {
+		compatible = "zmk,kscan-gpio-matrix";
+		label = "KSCAN3";
+		status = "disabled";
+	};
 	direct_scan: direct_scan {
 		compatible = "zmk,kscan-gpio-direct";
 		label = "KSCANRRE";
@@ -60,7 +57,7 @@ RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)  RC(2,6) RC(3,7)  RC(2,8) RC(2,9
 		label = "RIGHT_ENCODER";
 		status = "disabled";
 	};
-	sensors {
+	sensors: sensors {
 		compatible = "zmk,keymap-sensors";
 		sensors = <&right_encoder>;
 		status = "disabled";
