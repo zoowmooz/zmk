@@ -6,7 +6,7 @@
 &default_transform {	col-offset = <0>;};
 &kscan0 {
 	matrix2: matrix2 {	kscan = <&kscan2>;	column-offset = <6>;	row-offset = <0>;};
-	matrix3: matrix3 {	kscan = <&kscan3>;	column-offset = <6>;	row-offset = <0>;};
+	matrix3: matrix3 {	kscan = <&kscan3>;	column-offset = <6>;	row-offset = <1>;};
 };
 &kscan1 {
 	col-gpios

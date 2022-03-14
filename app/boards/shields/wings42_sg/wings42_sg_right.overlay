@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: MIT
  */
 #include "wings42_sg.dtsi"
-&default_transform {	col-offset =    <8>;};
+&default_transform {	col-offset =    <7>;};
 &kscan0 {
-		direct1: direct1 {	kscan = <&direct_scan>;	column-offset = <6>;	};
+		direct1: direct1 {	kscan = <&direct_scan>;	column-offset = <0>;	};
+		matrix1: matrix1 {	kscan = <&kscan1>;	column-offset = <1>;	};
 };
 &kscan1 {
 	col-gpios

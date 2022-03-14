@@ -70,19 +70,19 @@ static uint8_t lithium_ion_mv_to_pct(int16_t bat_mv) {
 // Make sure selected channel is supported
 
 static int16_t tp_raw_filter_x(uint16_t raw_new) {
-    static uint16_t raw_array[32];
+    static uint16_t raw_array[64];
     static int16_t point = 0;
     static uint32_t raw_sum = 0, sqr_sum = 0;
     static int32_t temp_average = 0;
-    int16_t raw_old = raw_array[point & 31];
+    int16_t raw_old = raw_array[point & 63];
     int32_t average, variance;
     raw_sum -= raw_old;
     raw_sum += raw_new;
     sqr_sum -= raw_old * raw_old;
     sqr_sum += raw_new * raw_new;
-    raw_array[point++ & 31] = raw_new;
-    average = raw_sum >> 5; /* avarage = raw_sum / 2^sizeofbuffer */
-    variance = (sqr_sum - raw_sum * average) >> 5;
+    raw_array[point++ & 63] = raw_new;
+    average = raw_sum >> 6; /* avarage = raw_sum / 2^sizeofbuffer */
+    variance = (sqr_sum - raw_sum * average) >> 6;
 
     if (variance < 1000 && (3 < abs(temp_average - average) || temp_average == 0))
         temp_average = average;
@@ -94,19 +94,19 @@ static int16_t tp_raw_filter_x(uint16_t raw_new) {
 }
 
 static uint16_t tp_raw_filter_y(uint16_t raw_new) {
-    static uint16_t raw_array[32];
+    static uint16_t raw_array[64];
     static int16_t point = 0;
     static uint32_t raw_sum = 0, sqr_sum = 0;
     static int32_t temp_average = 0;
-    int16_t raw_old = raw_array[point & 31];
+    int16_t raw_old = raw_array[point & 63];
     int32_t average, variance;
     raw_sum -= raw_old;
     raw_sum += raw_new;
     sqr_sum -= raw_old * raw_old;
     sqr_sum += raw_new * raw_new;
-    raw_array[point++ & 31] = raw_new;
-    average = raw_sum >> 5; /* avarage = raw_sum / 2^sizeofbuffer */
-    variance = (sqr_sum - raw_sum * average) >> 5;
+    raw_array[point++ & 63] = raw_new;
+    average = raw_sum >> 6; /* avarage = raw_sum / 2^sizeofbuffer */
+    variance = (sqr_sum - raw_sum * average) >> 6;
 
     if (variance < 1000 && (3 < abs(temp_average - average) || temp_average == 0))
         temp_average = average;
