@@ -144,7 +144,7 @@ static int bvd_init(const struct device *dev) {
     }
 
     drv_data->as = (struct adc_sequence){
-        .channels = BIT(0),
+        .channels = BIT(drv_cfg->io_channel.channel),
         .buffer = &drv_data->value.adc_raw,
         .buffer_size = sizeof(drv_data->value.adc_raw),
         .oversampling = 4,
@@ -156,6 +156,7 @@ static int bvd_init(const struct device *dev) {
         .gain = ADC_GAIN_1_5,
         .reference = ADC_REF_INTERNAL,
         .acquisition_time = ADC_ACQ_TIME(ADC_ACQ_TIME_MICROSECONDS, 40),
+        .channel_id = drv_cfg->io_channel.channel,
         .input_positive = SAADC_CH_PSELP_PSELP_AnalogInput0 + drv_cfg->io_channel.channel,
     };
 
