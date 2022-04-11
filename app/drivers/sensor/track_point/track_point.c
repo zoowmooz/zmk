@@ -28,7 +28,7 @@ struct gpio_channel_config {
 };
 
 struct tp_config {
-    struct io_channel_config io_channel;
+    struct io_channel_config io_channel_x;
     struct io_channel_config io_channel_y;
     struct gpio_channel_config power_gpios;
     uint32_t output_ohm;
@@ -50,25 +50,7 @@ struct tp_data {
     uint8_t state_of_charge;
 };
 
-static uint8_t lithium_ion_mv_to_pct(int16_t bat_mv) {
-    // Simple linear approximation of a battery based off adafruit's discharge graph:
-    // https://learn.adafruit.com/li-ion-and-lipoly-batteries/voltages
-
-    if (bat_mv >= 4200) {
-        return 100;
-    } else if (bat_mv <= 3450) {
-        return 0;
-    }
-
-    return bat_mv * 2 / 15 - 459;
-}
-
-// LOG_HEXDUMP_DBG((uint32_t *)(0x50000000 + 0x504), 36,"OUT       :");
-// LOG_HEXDUMP_DBG((uint32_t *)(0x50000000 + 0x700), 128,"PN_CNF[0] :");
-// LOG_HEXDUMP_DBG((uint32_t *)(0x50000000 + 0x724),  4,"PN_CNF[ 9] :");
-// LOG_HEXDUMP_DBG((uint32_t *)(0x50000000 + 0x77C),  4,"PN_CNF[31] :");
-// Make sure selected channel is supported
-
+#define ARRAY_LENGTH 6 /* bit */
 static int16_t tp_raw_filter_x(uint16_t raw_new) {
     static uint16_t raw_array[64];
     static int16_t point = 0;
@@ -94,19 +76,19 @@ static int16_t tp_raw_filter_x(uint16_t raw_new) {
 }
 
 static uint16_t tp_raw_filter_y(uint16_t raw_new) {
-    static uint16_t raw_array[64];
+    static uint16_t raw_array[(2^ARRAY_LENGTH)];
     static int16_t point = 0;
     static uint32_t raw_sum = 0, sqr_sum = 0;
     static int32_t temp_average = 0;
-    int16_t raw_old = raw_array[point & 63];
+    int16_t raw_old = raw_array[point & ((2^ARRAY_LENGTH)-1)];
     int32_t average, variance;
     raw_sum -= raw_old;
     raw_sum += raw_new;
     sqr_sum -= raw_old * raw_old;
     sqr_sum += raw_new * raw_new;
-    raw_array[point++ & 63] = raw_new;
-    average = raw_sum >> 6; /* avarage = raw_sum / 2^sizeofbuffer */
-    variance = (sqr_sum - raw_sum * average) >> 6;
+    raw_array[point++ & ((2^ARRAY_LENGTH)-1)] = raw_new;
+    average = raw_sum >> ARRAY_LENGTH; /* avarage = raw_sum / 2^sizeofbuffer */
+    variance = (sqr_sum - raw_sum * average) >> ARRAY_LENGTH;
 
     if (variance < 1000 && (3 < abs(temp_average - average) || temp_average == 0))
         temp_average = average;
@@ -117,13 +99,28 @@ static uint16_t tp_raw_filter_y(uint16_t raw_new) {
         return 0;
 }
 
+//#define REDUCE_POWER_CONSUMPTION
+#ifdef REDUCE_POWER_CONSUMPTION
+static int tp_power_gpio(const struct device *dev, const int val){
+  int rc = 0;
+#if DT_INST_NODE_HAS_PROP(0, power_gpios)
+  const struct tp_config *drv_cfg = dev->config;
+  if (drv_data->gpio) {
+    int rc = gpio_pin_set(drv_data->gpio, drv_cfg->power_gpios.pin, val);
+    if (rc != 0) {
+      LOG_DBG("Failed to %d ADC power GPIO: %d", val, rc);
+    }
+  }
+#endif /* power_gpios */
+  return rc;
+}
+#endif /* REDUCE_POWER_CONSUMPTION */
+
 static int tp_sample_fetch(const struct device *dev, enum sensor_channel chan) {
     struct tp_data *drv_data = dev->data;
-    const struct tp_config *drv_cfg = dev->config;
     struct adc_sequence *as_x = &drv_data->as_x;
     struct adc_sequence *as_y = &drv_data->as_y;
-    // int val_holdvref = 0;
-    // int val_resetmaxmin = 0;
+    int rc = 0;
 
     if (chan != SENSOR_CHAN_ACCEL_X && chan != SENSOR_CHAN_ACCEL_Y && chan != SENSOR_CHAN_ACCEL_Z &&
         chan != SENSOR_CHAN_ACCEL_XYZ) {
@@ -131,72 +128,42 @@ static int tp_sample_fetch(const struct device *dev, enum sensor_channel chan) {
         return -ENOTSUP;
     }
 
-    // val_holdvref = gpio_pin_get_raw(drv_data->gpio, 9);
-    // val_resetmaxmin = gpio_pin_get_raw(drv_data->gpio,10);
-    int rc = 0;
-    int rc_y = 0;
+#ifdef REDUCE_POWER_CONSUMPTION
+    rc = tp_power_gpio(dev->data, 1);
+    if (rc != 0) return rc;
+#endif /* REDUCE_POWER_CONSUMPTION */
 
-    // Enable power GPIO if present
-    if (drv_data->gpio) {
-        //        rc = gpio_pin_set(drv_data->gpio, drv_cfg->power_gpios.pin, 1);
-        if (rc != 0) {
-            LOG_DBG("Failed to enable ADC power GPIO: %d", rc);
-            return rc;
-        }
-        // wait for any capacitance to charge up
-        // k_sleep(K_MSEC(5));
-    }
+    // wait for any capacitance to charge up
+    // k_sleep(K_MSEC(5));
 
     // Read ADC
     rc = adc_read(drv_data->adc_x, as_x);
+    if (rc != 0) {
+        LOG_DBG("Failed to read X ADC: %d", rc);
+	return rc;
+    }
     as_x->calibrate = false;
-    rc_y = adc_read(drv_data->adc_y, as_y);
+    rc = adc_read(drv_data->adc_y, as_y);
+    if (rc != 0) {
+        LOG_DBG("Failed to read Y ADC: %d", rc);
+	return rc;
+    }
     as_y->calibrate = false;
 
-    // Disable power GPIO if present
-    if (drv_data->gpio) {
-        // LOG_DBG("power GPIO %d OFF",drv_cfg->power_gpios.pin);
-        // int rc2 = gpio_pin_set(drv_data->gpio, drv_cfg->power_gpios.pin, val_holdvref);
-        //        int rc2 = gpio_pin_set(drv_data->gpio, drv_cfg->power_gpios.pin, 0);
-        //        if (rc2 != 0) {
-        //            LOG_DBG("Failed to disable ADC power GPIO: %d", rc2);
-        //            return rc2;
-        //        }
-    }
+#ifdef REDUCE_POWER_CONSUMPTION
+    rc = tp_power_gpio(dev->data, 0);
+    if (rc != 0) return rc;
+#endif /* REDUCE_POWER_CONSUMPTION */
 
-    if (rc == 0) {
-        drv_data->voltage_x = tp_raw_filter_x(drv_data->adc_raw_x);
-    } else {
-        LOG_DBG("Failed to read X ADC: %d", rc);
-    }
+    drv_data->voltage_x = tp_raw_filter_x(drv_data->adc_raw_x);
+    drv_data->voltage_y = tp_raw_filter_y(drv_data->adc_raw_y);
 
-    if (rc_y == 0) {
-        drv_data->voltage_y = tp_raw_filter_y(drv_data->adc_raw_y);
-    } else {
-        LOG_DBG("Failed to read Y ADC: %d", rc_y);
-    }
-    /*
-    LOG_DBG("gpio raw");
-    for (int i=0;i<48;){
-      LOG_DBG("+%2d:%d %d %d %d %d %d %d %d ",i,
-              gpio_pin_get_raw(drv_data->gpio,i++),
-              gpio_pin_get_raw(drv_data->gpio,i++),
-              gpio_pin_get_raw(drv_data->gpio,i++),
-              gpio_pin_get_raw(drv_data->gpio,i++),
-              gpio_pin_get_raw(drv_data->gpio,i++),
-              gpio_pin_get_raw(drv_data->gpio,i++),
-              gpio_pin_get_raw(drv_data->gpio,i++),
-              gpio_pin_get_raw(drv_data->gpio,i++)
-              );
-    }
-    */
-    return rc;
+    return 0;
 }
 
 static int tp_channel_get(const struct device *dev, enum sensor_channel chan,
                           struct sensor_value *val) {
     struct tp_data *drv_data = dev->data;
-    // LOG_DBG("tp_channel_get:name=%s chan=%d",dev->name, chan);
 
     switch (chan) {
     case SENSOR_CHAN_ACCEL_X:
@@ -221,74 +188,22 @@ static const struct sensor_driver_api tp_api = {
 static int tp_init(const struct device *dev) {
     struct tp_data *drv_data = dev->data;
     const struct tp_config *drv_cfg = dev->config;
+    int rc = 0;
 
-    drv_data->adc_x = device_get_binding(drv_cfg->io_channel.label);
-
+    drv_data->adc_x = device_get_binding(drv_cfg->io_channel_x.label);
     if (drv_data->adc_x == NULL) {
-        LOG_ERR("ADC %s failed to retrieve", drv_cfg->io_channel.label);
+        LOG_ERR("ADC %s failed to retrieve", drv_cfg->io_channel_x.label);
         return -ENODEV;
     }
 
     drv_data->adc_y = device_get_binding(drv_cfg->io_channel_y.label);
-
     if (drv_data->adc_y == NULL) {
         LOG_ERR("ADC %s failed to retrieve", drv_cfg->io_channel_y.label);
         return -ENODEV;
     }
 
-    int rc = 0;
-
-    if (drv_cfg->power_gpios.label) {
-        // LOG_ERR(" power_gpios.label %s", drv_cfg->power_gpios.label);
-        // LOG_ERR(" power_gpios.pin   %d", drv_cfg->power_gpios.pin);
-        // LOG_ERR(" power_gpios.flag  %x", drv_cfg->power_gpios.flags);
-        drv_data->gpio = device_get_binding(drv_cfg->power_gpios.label);
-        if (drv_data->gpio == NULL) {
-            LOG_ERR("Failed to get GPIO %s", drv_cfg->power_gpios.label);
-            return -ENODEV;
-        }
-        rc = gpio_pin_configure(drv_data->gpio, drv_cfg->power_gpios.pin,
-                                /* GPIO_OUTPUT_INACTIVE |*/
-                                GPIO_OUTPUT_ACTIVE | drv_cfg->power_gpios.flags);
-        /*
-                                // 0x0203);
-                                256 * 2 +
-                                4   * 0 +
-                                2   * 0 +
-                                1   * 1
-                                );
-          a = (uint32_t *)(0x50000000 + 0x700);
-          *a = 0xc;
-          */
-        if (rc != 0) {
-            LOG_ERR("Failed to control feed %s.%u: %d", drv_cfg->power_gpios.label,
-                    drv_cfg->power_gpios.pin, rc);
-            return rc;
-        }
-        /*
-        rc = gpio_pin_configure(drv_data->gpio,10, GPIO_INPUT|GPIO_PULL_UP);
-        if (rc != 0) {
-            LOG_ERR("Failed to control test input %u: %d",10, rc);
-            return rc;
-        }
-        rc = gpio_pin_configure(drv_data->gpio, 9, GPIO_INPUT|GPIO_PULL_UP);
-        if (rc != 0) {
-            LOG_ERR("Failed to control test input %u: %d", 9, rc);
-            return rc;
-        }
-
-        for(int i=0;i<48;i++) {
-          rc = gpio_pin_configure(drv_data->gpio, i, GPIO_INPUT|GPIO_PULL_UP);
-          if (rc != 0) {
-            LOG_ERR(" Failed to control test input %u: %d", i, rc);
-            return rc;
-          }
-        }
-        */
-    }
-
     drv_data->as_x = (struct adc_sequence){
-        .channels = BIT(0),
+        .channels = BIT(drv_cfg->io_channel_x.channel),
         .buffer = &drv_data->adc_raw_x,
         .buffer_size = sizeof(drv_data->adc_raw_x),
         .oversampling = 4,
@@ -296,7 +211,7 @@ static int tp_init(const struct device *dev) {
     };
 
     drv_data->as_y = (struct adc_sequence){
-        .channels = BIT(5),
+        .channels = BIT(drv_cfg->io_channel_y.channel),
         .buffer = &drv_data->adc_raw_y,
         .buffer_size = sizeof(drv_data->adc_raw_y),
         .oversampling = 4,
@@ -306,48 +221,18 @@ static int tp_init(const struct device *dev) {
 #ifdef CONFIG_ADC_NRFX_SAADC
     drv_data->acc_x = (struct adc_channel_cfg){
         .gain = ADC_GAIN_1_6,
-        // .gain = ADC_GAIN_1_6,
-        // .gain = ADC_GAIN_1_5,   /* 2.1mV -> */
-        // .gain = ADC_GAIN_1_4,   /* 2.1mV -> */
-        // .gain = ADC_GAIN_1_3,   /* 2.1mV -> */
-        // .gain = ADC_GAIN_1_2,   /* 2.1mV -> 4095*/
-        // .gain = ADC_GAIN_2_3,   /* 2.1mV -> */
-        // .gain = ADC_GAIN_1,     /* 2.1mV -> 4095*/
-        // .gain = ADC_GAIN_2,     /* 2.1mV -> 4095 */
-        // .reference = ADC_REF_VDD_1,     /* < VDD. */
-        // .reference = ADC_REF_VDD_1_2,   /* < VDD/2. */
-        // .reference = ADC_REF_VDD_1_3,   /* < VDD/3. */
-        // .reference = ADC_REF_VDD_1_4,   /**< VDD/4. */
         .reference = ADC_REF_INTERNAL,
-        /* < Internal. */ /* default */
-                          // .reference = ADC_REF_EXTERNAL0, /* < External, input 0. */
-                          // .reference = ADC_REF_EXTERNAL1, /* < External, input 1. */
         .acquisition_time = ADC_ACQ_TIME(ADC_ACQ_TIME_MICROSECONDS, 40),
-        .channel_id = 0,
-        .input_positive = SAADC_CH_PSELP_PSELP_AnalogInput0 + drv_cfg->io_channel.channel,
+        .channel_id = drv_cfg->io_channel_x.channel,
+        .input_positive = SAADC_CH_PSELP_PSELP_AnalogInput0 + drv_cfg->io_channel_x.channel,
     };
     drv_data->as_x.resolution = 12;
 
     drv_data->acc_y = (struct adc_channel_cfg){
         .gain = ADC_GAIN_1_6,
-        // .gain = ADC_GAIN_1_6,
-        // .gain = ADC_GAIN_1_5,
-        // .gain = ADC_GAIN_1_4,
-        // .gain = ADC_GAIN_1_3,
-        // .gain = ADC_GAIN_1_2,
-        // .gain = ADC_GAIN_2_3,
-        // .gain = ADC_GAIN_1,
-        // .gain = ADC_GAIN_2,
-        // .reference = ADC_REF_VDD_1,     /* < VDD. */
-        // .reference = ADC_REF_VDD_1_2,   /* < VDD/2. */
-        // .reference = ADC_REF_VDD_1_3,   /* < VDD/3. */
-        // .reference = ADC_REF_VDD_1_4,   /* < VDD/4. */
         .reference = ADC_REF_INTERNAL,
-        /* < Internal. */ /* default */
-                          // .reference = ADC_REF_EXTERNAL0, /* < External, input 0. */
-                          // .reference = ADC_REF_EXTERNAL1, /* < External, input 1. */
         .acquisition_time = ADC_ACQ_TIME(ADC_ACQ_TIME_MICROSECONDS, 40),
-        .channel_id = 5,
+        .channel_id = drv_cfg->io_channel_y.channel,
         .input_positive = SAADC_CH_PSELP_PSELP_AnalogInput0 + drv_cfg->io_channel_y.channel,
     };
     drv_data->as_y.resolution = 12;
@@ -357,30 +242,55 @@ static int tp_init(const struct device *dev) {
 #endif
 
     rc = adc_channel_setup(drv_data->adc_x, &drv_data->acc_x);
-    LOG_DBG("AIN%u label:%s setup returned %d", drv_cfg->io_channel.channel,
-            drv_cfg->io_channel.label, rc);
-    if (rc != 0)
+    LOG_DBG("AIN%u label:%s setup returned %d", drv_cfg->io_channel_x.channel,
+            drv_cfg->io_channel_x.label, rc);
+    if (rc != 0){
         LOG_ERR("adc_channel_setup X err %d", rc);
+	return rc;
+    }
     rc = adc_channel_setup(drv_data->adc_y, &drv_data->acc_y);
     LOG_DBG("AIN%u label:%s setup returned %d", drv_cfg->io_channel_y.channel,
             drv_cfg->io_channel_y.label, rc);
-    if (rc != 0)
+    if (rc != 0){
         LOG_ERR("adc_channel_setup Y err %d", rc);
+	return rc;
+    }
 
+#if DT_INST_NODE_HAS_PROP(0, power_gpios)
+    if (drv_cfg->power_gpios.label) {
+      drv_data->gpio = device_get_binding(drv_cfg->power_gpios.label);
+      if (drv_data->gpio == NULL) {
+	LOG_ERR("Failed to get GPIO %s", drv_cfg->power_gpios.label);
+	return -ENODEV;
+      }
+      rc = gpio_pin_configure(drv_data->gpio, drv_cfg->power_gpios.pin,
+			      GPIO_OUTPUT_ACTIVE | drv_cfg->power_gpios.flags);
+      if (rc != 0) {
+	LOG_ERR("Failed to control feed %s.%u: %d", drv_cfg->power_gpios.label,
+		drv_cfg->power_gpios.pin, rc);
+	return rc;
+      }
+      rc = gpio_pin_set(drv_data->gpio, drv_cfg->power_gpios.pin, 1);
+      if (rc != 0) {
+	LOG_DBG("Failed to enable ADC power GPIO: %d", rc);
+	return rc;
+      }
+    }
+#endif
     return rc;
 }
 
 static struct tp_data tp_data;
 static const struct tp_config tp_cfg = {
-    .io_channel =
+    .io_channel_x =
         {
-            DT_INST_IO_CHANNELS_LABEL(0),
-            DT_INST_IO_CHANNELS_INPUT(0),
+	  DT_INST_IO_CHANNELS_LABEL(0),
+	  DT_INST_IO_CHANNELS_INPUT_BY_IDX(0, 0),
         },
     .io_channel_y =
         {
-            DT_INST_IO_CHANNELS_LABEL(0),
-            5,
+	  DT_INST_IO_CHANNELS_LABEL(0),
+	  DT_INST_IO_CHANNELS_INPUT_BY_IDX(0, 1),
         },
 #if DT_INST_NODE_HAS_PROP(0, power_gpios)
     .power_gpios =
@@ -394,7 +304,7 @@ static const struct tp_config tp_cfg = {
     .full_ohm = DT_INST_PROP(0, full_ohms),
 };
 
-DEVICE_AND_API_INIT(tp_dev, DT_INST_LABEL(0), &tp_init, &tp_data, &tp_cfg, POST_KERNEL,
-                    CONFIG_SENSOR_INIT_PRIORITY, &tp_api);
+DEVICE_DT_INST_DEFINE(0, &tp_init, device_pm_control_nop, &tp_data, &tp_cfg, POST_KERNEL,
+		      CONFIG_SENSOR_INIT_PRIORITY, &tp_api);
 
 #endif /* CONFIG_ZMK_TRACK_POINT */
