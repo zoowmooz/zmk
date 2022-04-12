@@ -29,7 +29,8 @@
                                &kp LGUI &kp LALT &mkp LCLK &none         &none    &lt 1 SPACE   &kp RET       &mo 2
                         >;
 
-			sensor-bindings = <&inc_dec_kp UP DOWN>;
+			sensor-bindings = <&inc_dec_kp SCROLL_UP SCROLL_DOWN>;
+//			sensor-bindings = <&inc_dec_kp UP DOWN>;
 //			sensor-bindings = <&inc_dec_kp K_SCROLL_UP K_SCROLL_DOWN>;
                 };
                 raise_layer { /* Lower */
