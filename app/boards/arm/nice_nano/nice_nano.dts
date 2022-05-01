@@ -25,7 +25,7 @@
 	tpoint {
 		compatible = "zmk,track-point";
 		label = "TRACKPOINT";
-		io-channels = <&adc 0>,<&adc 5>;
+		io-channels = <&adc 5>,<&adc 0>;
 		output-ohms = <1000>;
 		full-ohms = <(1000 + 345)>;
 		power-gpios {
