@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 The ZMK Contributors
+ * Copyright (c) 2022 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -50,7 +50,6 @@ struct tp_data {
     uint8_t state_of_charge;
 };
 
-#define ARRAY_LENGTH 6 /* bit */
 static int16_t tp_raw_filter_x(uint16_t raw_new) {
     static uint16_t raw_array[64];
     static int16_t point = 0;
@@ -74,21 +73,20 @@ static int16_t tp_raw_filter_x(uint16_t raw_new) {
     else
         return 0;
 }
-
-static uint16_t tp_raw_filter_y(uint16_t raw_new) {
-    static uint16_t raw_array[(2^ARRAY_LENGTH)];
+static int16_t tp_raw_filter_y(uint16_t raw_new) {
+    static uint16_t raw_array[64];
     static int16_t point = 0;
     static uint32_t raw_sum = 0, sqr_sum = 0;
     static int32_t temp_average = 0;
-    int16_t raw_old = raw_array[point & ((2^ARRAY_LENGTH)-1)];
+    int16_t raw_old = raw_array[point & 63];
     int32_t average, variance;
     raw_sum -= raw_old;
     raw_sum += raw_new;
     sqr_sum -= raw_old * raw_old;
     sqr_sum += raw_new * raw_new;
-    raw_array[point++ & ((2^ARRAY_LENGTH)-1)] = raw_new;
-    average = raw_sum >> ARRAY_LENGTH; /* avarage = raw_sum / 2^sizeofbuffer */
-    variance = (sqr_sum - raw_sum * average) >> ARRAY_LENGTH;
+    raw_array[point++ & 63] = raw_new;
+    average = raw_sum >> 6; /* avarage = raw_sum / 2^sizeofbuffer */
+    variance = (sqr_sum - raw_sum * average) >> 6;
 
     if (variance < 1000 && (3 < abs(temp_average - average) || temp_average == 0))
         temp_average = average;
@@ -104,6 +102,7 @@ static uint16_t tp_raw_filter_y(uint16_t raw_new) {
 static int tp_power_gpio(const struct device *dev, const int val){
   int rc = 0;
 #if DT_INST_NODE_HAS_PROP(0, power_gpios)
+  const struct tp_data *drv_data = dev->data;
   const struct tp_config *drv_cfg = dev->config;
   if (drv_data->gpio) {
     int rc = gpio_pin_set(drv_data->gpio, drv_cfg->power_gpios.pin, val);
@@ -154,7 +153,6 @@ static int tp_sample_fetch(const struct device *dev, enum sensor_channel chan) {
     rc = tp_power_gpio(dev->data, 0);
     if (rc != 0) return rc;
 #endif /* REDUCE_POWER_CONSUMPTION */
-
     drv_data->voltage_x = tp_raw_filter_x(drv_data->adc_raw_x);
     drv_data->voltage_y = tp_raw_filter_y(drv_data->adc_raw_y);
 
