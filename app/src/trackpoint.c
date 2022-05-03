@@ -40,14 +40,14 @@ static int zmk_trackpoint_update(const struct device *trackpoint) {
     if (state_of_charge.val1 != 0 || state_of_charge.val2 != 0) {
         int32_t x, y;
         struct zmk_hid_mouse_report *mouse_report = zmk_hid_get_mouse_report();
-	x = state_of_charge.val1;
-	y = state_of_charge.val2 * -1;
-#define xfp    40
-#define xfp2   50
-#define yfp    40
-#define yfp2  100
-        mouse_report->body.x = (int16_t)((x/xfp)^3 / xfp2);
-        mouse_report->body.y = (int16_t)((y/yfp)^3 / yfp2);
+        x = state_of_charge.val1;
+        y = state_of_charge.val2 * -1;
+#define xfp 40
+#define xfp2 50
+#define yfp 40
+#define yfp2 100
+        mouse_report->body.x = (int16_t)((x / xfp) ^ 3 / xfp2);
+        mouse_report->body.y = (int16_t)((y / yfp) ^ 3 / yfp2);
         zmk_endpoints_send_mouse_report();
     }
     return rc;
