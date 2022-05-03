@@ -99,19 +99,19 @@ static int16_t tp_raw_filter_y(uint16_t raw_new) {
 
 //#define REDUCE_POWER_CONSUMPTION
 #ifdef REDUCE_POWER_CONSUMPTION
-static int tp_power_gpio(const struct device *dev, const int val){
-  int rc = 0;
+static int tp_power_gpio(const struct device *dev, const int val) {
+    int rc = 0;
 #if DT_INST_NODE_HAS_PROP(0, power_gpios)
-  const struct tp_data *drv_data = dev->data;
-  const struct tp_config *drv_cfg = dev->config;
-  if (drv_data->gpio) {
-    int rc = gpio_pin_set(drv_data->gpio, drv_cfg->power_gpios.pin, val);
-    if (rc != 0) {
-      LOG_DBG("Failed to %d ADC power GPIO: %d", val, rc);
+    const struct tp_data *drv_data = dev->data;
+    const struct tp_config *drv_cfg = dev->config;
+    if (drv_data->gpio) {
+        int rc = gpio_pin_set(drv_data->gpio, drv_cfg->power_gpios.pin, val);
+        if (rc != 0) {
+            LOG_DBG("Failed to %d ADC power GPIO: %d", val, rc);
+        }
     }
-  }
 #endif /* power_gpios */
-  return rc;
+    return rc;
 }
 #endif /* REDUCE_POWER_CONSUMPTION */
 
@@ -129,7 +129,8 @@ static int tp_sample_fetch(const struct device *dev, enum sensor_channel chan) {
 
 #ifdef REDUCE_POWER_CONSUMPTION
     rc = tp_power_gpio(dev->data, 1);
-    if (rc != 0) return rc;
+    if (rc != 0)
+        return rc;
 #endif /* REDUCE_POWER_CONSUMPTION */
 
     // wait for any capacitance to charge up
@@ -139,19 +140,20 @@ static int tp_sample_fetch(const struct device *dev, enum sensor_channel chan) {
     rc = adc_read(drv_data->adc_x, as_x);
     if (rc != 0) {
         LOG_DBG("Failed to read X ADC: %d", rc);
-	return rc;
+        return rc;
     }
     as_x->calibrate = false;
     rc = adc_read(drv_data->adc_y, as_y);
     if (rc != 0) {
         LOG_DBG("Failed to read Y ADC: %d", rc);
-	return rc;
+        return rc;
     }
     as_y->calibrate = false;
 
 #ifdef REDUCE_POWER_CONSUMPTION
     rc = tp_power_gpio(dev->data, 0);
-    if (rc != 0) return rc;
+    if (rc != 0)
+        return rc;
 #endif /* REDUCE_POWER_CONSUMPTION */
     drv_data->voltage_x = tp_raw_filter_x(drv_data->adc_raw_x);
     drv_data->voltage_y = tp_raw_filter_y(drv_data->adc_raw_y);
@@ -242,37 +244,37 @@ static int tp_init(const struct device *dev) {
     rc = adc_channel_setup(drv_data->adc_x, &drv_data->acc_x);
     LOG_DBG("AIN%u label:%s setup returned %d", drv_cfg->io_channel_x.channel,
             drv_cfg->io_channel_x.label, rc);
-    if (rc != 0){
+    if (rc != 0) {
         LOG_ERR("adc_channel_setup X err %d", rc);
-	return rc;
+        return rc;
     }
     rc = adc_channel_setup(drv_data->adc_y, &drv_data->acc_y);
     LOG_DBG("AIN%u label:%s setup returned %d", drv_cfg->io_channel_y.channel,
             drv_cfg->io_channel_y.label, rc);
-    if (rc != 0){
+    if (rc != 0) {
         LOG_ERR("adc_channel_setup Y err %d", rc);
-	return rc;
+        return rc;
     }
 
 #if DT_INST_NODE_HAS_PROP(0, power_gpios)
     if (drv_cfg->power_gpios.label) {
-      drv_data->gpio = device_get_binding(drv_cfg->power_gpios.label);
-      if (drv_data->gpio == NULL) {
-	LOG_ERR("Failed to get GPIO %s", drv_cfg->power_gpios.label);
-	return -ENODEV;
-      }
-      rc = gpio_pin_configure(drv_data->gpio, drv_cfg->power_gpios.pin,
-			      GPIO_OUTPUT_ACTIVE | drv_cfg->power_gpios.flags);
-      if (rc != 0) {
-	LOG_ERR("Failed to control feed %s.%u: %d", drv_cfg->power_gpios.label,
-		drv_cfg->power_gpios.pin, rc);
-	return rc;
-      }
-      rc = gpio_pin_set(drv_data->gpio, drv_cfg->power_gpios.pin, 1);
-      if (rc != 0) {
-	LOG_DBG("Failed to enable ADC power GPIO: %d", rc);
-	return rc;
-      }
+        drv_data->gpio = device_get_binding(drv_cfg->power_gpios.label);
+        if (drv_data->gpio == NULL) {
+            LOG_ERR("Failed to get GPIO %s", drv_cfg->power_gpios.label);
+            return -ENODEV;
+        }
+        rc = gpio_pin_configure(drv_data->gpio, drv_cfg->power_gpios.pin,
+                                GPIO_OUTPUT_ACTIVE | drv_cfg->power_gpios.flags);
+        if (rc != 0) {
+            LOG_ERR("Failed to control feed %s.%u: %d", drv_cfg->power_gpios.label,
+                    drv_cfg->power_gpios.pin, rc);
+            return rc;
+        }
+        rc = gpio_pin_set(drv_data->gpio, drv_cfg->power_gpios.pin, 1);
+        if (rc != 0) {
+            LOG_DBG("Failed to enable ADC power GPIO: %d", rc);
+            return rc;
+        }
     }
 #endif
     return rc;
@@ -282,13 +284,13 @@ static struct tp_data tp_data;
 static const struct tp_config tp_cfg = {
     .io_channel_x =
         {
-	  DT_INST_IO_CHANNELS_LABEL(0),
-	  DT_INST_IO_CHANNELS_INPUT_BY_IDX(0, 0),
+            DT_INST_IO_CHANNELS_LABEL(0),
+            DT_INST_IO_CHANNELS_INPUT_BY_IDX(0, 0),
         },
     .io_channel_y =
         {
-	  DT_INST_IO_CHANNELS_LABEL(0),
-	  DT_INST_IO_CHANNELS_INPUT_BY_IDX(0, 1),
+            DT_INST_IO_CHANNELS_LABEL(0),
+            DT_INST_IO_CHANNELS_INPUT_BY_IDX(0, 1),
         },
 #if DT_INST_NODE_HAS_PROP(0, power_gpios)
     .power_gpios =
@@ -303,6 +305,6 @@ static const struct tp_config tp_cfg = {
 };
 
 DEVICE_DT_INST_DEFINE(0, &tp_init, device_pm_control_nop, &tp_data, &tp_cfg, POST_KERNEL,
-		      CONFIG_SENSOR_INIT_PRIORITY, &tp_api);
+                      CONFIG_SENSOR_INIT_PRIORITY, &tp_api);
 
 #endif /* CONFIG_ZMK_TRACK_POINT */
