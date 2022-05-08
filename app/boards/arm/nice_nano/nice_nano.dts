@@ -21,4 +21,22 @@
 		output-ohms = <2000000>;
 		full-ohms = <(2000000 + 806000)>;
 	};
+	tpoint {
+		compatible = "zmk,track-point";
+		label = "TRACKPOINT";
+		io-channels = <&adc 5>,<&adc 0>;
+		output-ohms = <1000>;
+		full-ohms = <(1000 + 345)>;
+		power-gpios {
+		    label = "ADC_POWER";
+		    pin = <31>;
+		    flags = <0>;
+		    };
+		power-gpios = <&gpio0 31 0>;
+/*		power-gpios = <&gpio0 31 0x501>;		*/
+/*		power-gpios = <&gpio0 31 GPIO_OUTPUT_ACTIVE>;*/
+		/* 0x00000503 sense:0 drive:D0H1 pull:no pull input:disconnect dir:output*/
+		/*#define GPIO_OUTPUT             (1U << 9)*/
+		/*#define GPIO_OUTPUT_INIT_LOW    (1U << 10)*/
+	};
 };
