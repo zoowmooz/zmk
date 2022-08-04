@@ -50,22 +50,25 @@ struct tp_data {
     uint8_t state_of_charge;
 };
 
+#define tpbufflen 32
+#define tpbuffmsk 31
+#define tpbuffsft 5
 static int16_t tp_raw_filter_x(uint16_t raw_new) {
-    static uint16_t raw_array[64];
+    static uint16_t raw_array[tpbufflen];
     static int16_t point = 0;
     static uint32_t raw_sum = 0, sqr_sum = 0;
     static int32_t temp_average = 0;
-    int16_t raw_old = raw_array[point & 63];
+    int16_t raw_old = raw_array[point & tpbuffmsk];
     int32_t average, variance;
     raw_sum -= raw_old;
     raw_sum += raw_new;
     sqr_sum -= raw_old * raw_old;
     sqr_sum += raw_new * raw_new;
-    raw_array[point++ & 63] = raw_new;
-    average = raw_sum >> 6; /* avarage = raw_sum / 2^sizeofbuffer */
-    variance = (sqr_sum - raw_sum * average) >> 6;
+    raw_array[point++ & tpbuffmsk] = raw_new;
+    average = raw_sum >> tpbuffsft; /* avarage = raw_sum / 2^sizeofbuffer */
+    variance = (sqr_sum - raw_sum * average) >> tpbuffsft;
 
-    if (variance < 1000 && (3 < abs(temp_average - average) || temp_average == 0))
+    if ((variance < 1000) && (temp_average == 0))
         temp_average = average;
     // LOG_DBG("X c%5d rab:%5d tab:%5d var:%d", raw_new, average, temp_average, variance);
     if (3 < abs(raw_new - temp_average) && temp_average != 0)
@@ -74,21 +77,21 @@ static int16_t tp_raw_filter_x(uint16_t raw_new) {
         return 0;
 }
 static int16_t tp_raw_filter_y(uint16_t raw_new) {
-    static uint16_t raw_array[64];
+    static uint16_t raw_array[tpbufflen];
     static int16_t point = 0;
     static uint32_t raw_sum = 0, sqr_sum = 0;
     static int32_t temp_average = 0;
-    int16_t raw_old = raw_array[point & 63];
+    int16_t raw_old = raw_array[point & tpbuffmsk];
     int32_t average, variance;
     raw_sum -= raw_old;
     raw_sum += raw_new;
     sqr_sum -= raw_old * raw_old;
     sqr_sum += raw_new * raw_new;
-    raw_array[point++ & 63] = raw_new;
-    average = raw_sum >> 6; /* avarage = raw_sum / 2^sizeofbuffer */
-    variance = (sqr_sum - raw_sum * average) >> 6;
+    raw_array[point++ & tpbuffmsk] = raw_new;
+    average = raw_sum >> tpbuffsft; /* avarage = raw_sum / 2^sizeofbuffer */
+    variance = (sqr_sum - raw_sum * average) >> tpbuffsft;
 
-    if (variance < 1000 && (3 < abs(temp_average - average) || temp_average == 0))
+    if ((variance < 1000) && (temp_average == 0))
         temp_average = average;
     // LOG_DBG("Y c%5d rab:%5d tab:%5d var:%d", raw_new, average, temp_average, variance);
     if (3 < abs(raw_new - temp_average) && temp_average != 0)
@@ -97,7 +100,7 @@ static int16_t tp_raw_filter_y(uint16_t raw_new) {
         return 0;
 }
 
-//#define REDUCE_POWER_CONSUMPTION
+#define REDUCE_POWER_CONSUMPTION
 #ifdef REDUCE_POWER_CONSUMPTION
 static int tp_power_gpio(const struct device *dev, const int val) {
     int rc = 0;
@@ -128,13 +131,12 @@ static int tp_sample_fetch(const struct device *dev, enum sensor_channel chan) {
     }
 
 #ifdef REDUCE_POWER_CONSUMPTION
-    rc = tp_power_gpio(dev->data, 1);
+    rc = tp_power_gpio(dev, 1);
     if (rc != 0)
         return rc;
-#endif /* REDUCE_POWER_CONSUMPTION */
-
     // wait for any capacitance to charge up
-    // k_sleep(K_MSEC(5));
+    k_sleep(K_MSEC(1));
+#endif /* REDUCE_POWER_CONSUMPTION */
 
     // Read ADC
     rc = adc_read(drv_data->adc_x, as_x);
@@ -151,7 +153,7 @@ static int tp_sample_fetch(const struct device *dev, enum sensor_channel chan) {
     as_y->calibrate = false;
 
 #ifdef REDUCE_POWER_CONSUMPTION
-    rc = tp_power_gpio(dev->data, 0);
+    rc = tp_power_gpio(dev, 0);
     if (rc != 0)
         return rc;
 #endif /* REDUCE_POWER_CONSUMPTION */
