@@ -52,16 +52,17 @@ RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)  RC(2,6) RC(3,7)  RC(2,8) RC(2,9
 		label = "KSCANRRE";
 		status = "disabled";
 	};	
-	right_encoder: encoder_right {
-		compatible = "alps,ec11";
-		label = "RIGHT_ENCODER";
-		status = "disabled";
-	};
-	sensors: sensors {
-		compatible = "zmk,keymap-sensors";
-		sensors = <&right_encoder>;
-		status = "disabled";
-	};
+	// Disable encoder 20220804 for measurement power consumption
+	// right_encoder: encoder_right {
+	// 	compatible = "alps,ec11";
+	// 	label = "RIGHT_ENCODER";
+	// 	status = "disabled";
+	// };
+	// sensors: sensors {
+	// 	compatible = "zmk,keymap-sensors";
+	// 	sensors = <&right_encoder>;
+	// 	status = "disabled";
+	// };
 	tpoint {
 		compatible = "zmk,track-point";
 		label = "TRACKPOINT";

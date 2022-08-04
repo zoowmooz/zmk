@@ -23,12 +23,13 @@
 	input-gpios = <&pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 	status = "okay";
 };
-&right_encoder {
-	a-gpios = <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-	b-gpios = <&pro_micro 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-	resolution = <2>;
-	status = "okay";
-};
-&sensors {
-	status = "okay";
-};
+//Disable encoder 20220804 for measurement power consumption
+// &right_encoder {
+// 	a-gpios = <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+// 	b-gpios = <&pro_micro 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+// 	resolution = <2>;
+// 	status = "okay";
+// };
+//&sensors {
+//	status = "okay";
+//};

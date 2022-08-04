@@ -2,4 +2,6 @@
 # SPDX-License-Identifier: MIT
 
 add_subdirectory_ifdef(CONFIG_ZMK_BATTERY battery)
-add_subdirectory_ifdef(CONFIG_EC11 ec11)
+# Disable encoder 20220804 for measurement power consumption
+#add_subdirectory_ifdef(CONFIG_EC11 ec11)
+add_subdirectory_ifdef(CONFIG_ZMK_TRACK_POINT track_point)
