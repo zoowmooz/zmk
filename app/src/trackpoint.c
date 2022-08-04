@@ -43,9 +43,9 @@ static int zmk_trackpoint_update(const struct device *trackpoint) {
         x = state_of_charge.val1;
         y = state_of_charge.val2 * -1;
 #define xfp 40
-#define xfp2 50
+#define xfp2 32
 #define yfp 40
-#define yfp2 100
+#define yfp2 16
         mouse_report->body.x = (int16_t)((x / xfp) ^ 3 / xfp2);
         mouse_report->body.y = (int16_t)((y / yfp) ^ 3 / yfp2);
         zmk_endpoints_send_mouse_report();
