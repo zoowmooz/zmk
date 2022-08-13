@@ -1,0 +1,21 @@
+file_format: "1"
+id: wings42_sg_sxb
+name: wings42_sg_sxb
+type: shield
+url: https://github.com/yfuku/wings42
+requires: [seeeduino_xiao_ble]
+exposes:
+  - i2c_oled
+  - gpio
+  - power
+  - ground
+features:
+  - keys
+  - display
+  - underglow
+  - encoder
+  - pointer
+  - trackball
+siblings:
+  - corne_left
+  - corne_right

@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2022 KyouTansan
+ * SPDX-License-Identifier: MIT
+ */
+#include "wings42_sg_sxb.dtsi"
+&default_transform {	col-offset =    <6>;};
+&kscan0 {
+	col-gpios
+		= <&xiao_d 12 GPIO_ACTIVE_HIGH>
+		, <&xiao_d 13 GPIO_ACTIVE_HIGH>
+		, <&xiao_d 3  GPIO_ACTIVE_HIGH>
+		, <&xiao_d 4  GPIO_ACTIVE_HIGH>
+		, <&xiao_d 5  GPIO_ACTIVE_HIGH>
+		, <&xiao_d 6  GPIO_ACTIVE_HIGH>
+		;
+};
+
+&adc {
+	status = "okay";
+};
