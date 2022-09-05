@@ -107,20 +107,20 @@ static int tp_power_gpio(const struct device *dev, const int power) {
     const struct tp_config *drv_cfg = dev->config;
     static bool reduce_mode = true;
     int out = power;
-    
+
     if (zmk_usb_is_powered()) {
-      out = 1;
-      if (reduce_mode) {
-	reduce_mode = false;
-	rc = tp_raw_filter_x(0);
-	rc = tp_raw_filter_y(0);
-      }
+        out = 1;
+        if (reduce_mode) {
+            reduce_mode = false;
+            rc = tp_raw_filter_x(0);
+            rc = tp_raw_filter_y(0);
+        }
     } else {
-      if (!reduce_mode) {
-	reduce_mode = true;
-	rc = tp_raw_filter_x(0);
-	rc = tp_raw_filter_y(0);
-      }
+        if (!reduce_mode) {
+            reduce_mode = true;
+            rc = tp_raw_filter_x(0);
+            rc = tp_raw_filter_y(0);
+        }
     }
 
     if (drv_data->gpio) {

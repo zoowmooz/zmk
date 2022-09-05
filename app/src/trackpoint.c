@@ -24,32 +24,40 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 const struct device *trackpoint;
 
 struct zmk_hid_mouse_report *zmk_trackpoint_trans(int32_t x, int32_t y) {
-    struct zmk_hid_mouse_report *mouse_report = zmk_hid_get_mouse_report();
+  struct zmk_hid_mouse_report *mouse_report = zmk_hid_get_mouse_report();
 
-    if (zmk_usb_is_powered()) { // constant strain gauge power
+  if (zmk_usb_is_powered()) { // constant strain gauge power
       if (0 < x) {
-	mouse_report->body.x =  +(int16_t)((x*x)>> CONFIG_ZMK_TRACK_POINT_ATTEN_X_SQUARE_PLUS_CP);  // Right
+          mouse_report->body.x =
+              (int16_t)((x * x) >> CONFIG_ZMK_TRACK_POINT_ATTEN_X_SQUARE_PLUS_CP); // Right
       } else {
-	mouse_report->body.x =  -(int16_t)((x*x)>> CONFIG_ZMK_TRACK_POINT_ATTEN_X_SQUARE_MINUS_CP); // Left
+          mouse_report->body.x =
+              -(int16_t)((x * x) >> CONFIG_ZMK_TRACK_POINT_ATTEN_X_SQUARE_MINUS_CP); // Left
       }
       if (0 < y) {
-	mouse_report->body.y =  +(int16_t)((y*y)>> CONFIG_ZMK_TRACK_POINT_ATTEN_Y_SQUARE_PLUS_CP);  // Down
+          mouse_report->body.y =
+              (int16_t)((y * y) >> CONFIG_ZMK_TRACK_POINT_ATTEN_Y_SQUARE_PLUS_CP); // Down
       } else {
-	mouse_report->body.y =  -(int16_t)((y*y)>> CONFIG_ZMK_TRACK_POINT_ATTEN_Y_SQUARE_MINUS_CP); // Up
+          mouse_report->body.y =
+              -(int16_t)((y * y) >> CONFIG_ZMK_TRACK_POINT_ATTEN_Y_SQUARE_MINUS_CP); // Up
       }
-    } else {                    // reduce strain gauge power
+  } else { // reduce strain gauge power
       if (0 < x) {
-	mouse_report->body.x =  (int16_t)((x*x)>> CONFIG_ZMK_TRACK_POINT_ATTEN_X_SQUARE_PLUS_RP);  // Right
+          mouse_report->body.x =
+              (int16_t)((x * x) >> CONFIG_ZMK_TRACK_POINT_ATTEN_X_SQUARE_PLUS_RP); // Right
       } else {
-	mouse_report->body.x = -(int16_t)((x*x)>> CONFIG_ZMK_TRACK_POINT_ATTEN_X_SQUARE_MINUS_RP); // Left
+          mouse_report->body.x =
+              -(int16_t)((x * x) >> CONFIG_ZMK_TRACK_POINT_ATTEN_X_SQUARE_MINUS_RP); // Left
       }
       if (0 < y) {
-	mouse_report->body.y =  (int16_t)((y*y)>> CONFIG_ZMK_TRACK_POINT_ATTEN_Y_SQUARE_PLUS_RP);  // Down
+          mouse_report->body.y =
+              (int16_t)((y * y) >> CONFIG_ZMK_TRACK_POINT_ATTEN_Y_SQUARE_PLUS_RP); // Down
       } else {
-	mouse_report->body.y = -(int16_t)((y*y)>> CONFIG_ZMK_TRACK_POINT_ATTEN_Y_SQUARE_MINUS_RP); // Up
+          mouse_report->body.y =
+              -(int16_t)((y * y) >> CONFIG_ZMK_TRACK_POINT_ATTEN_Y_SQUARE_MINUS_RP); // Up
       }
-    }
-    return mouse_report;
+  }
+  return mouse_report;
 }
 
 static int zmk_trackpoint_update(const struct device *trackpoint) {
