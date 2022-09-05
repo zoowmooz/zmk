@@ -19,8 +19,38 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/event_manager.h>
 #include <zmk/hid.h>
 #include <zmk/endpoints.h>
+#include <zmk/usb.h>
 
 const struct device *trackpoint;
+
+struct zmk_hid_mouse_report *zmk_trackpoint_trans(int32_t x, int32_t y) {
+    struct zmk_hid_mouse_report *mouse_report = zmk_hid_get_mouse_report();
+
+    if (zmk_usb_is_powered()) { // constant strain gauge power
+      if (0 < x) {
+	mouse_report->body.x =  +(int16_t)((x*x)>> CONFIG_ZMK_TRACK_POINT_ATTEN_X_SQUARE_PLUS_CP);  // Right
+      } else {
+	mouse_report->body.x =  -(int16_t)((x*x)>> CONFIG_ZMK_TRACK_POINT_ATTEN_X_SQUARE_MINUS_CP); // Left
+      }
+      if (0 < y) {
+	mouse_report->body.y =  +(int16_t)((y*y)>> CONFIG_ZMK_TRACK_POINT_ATTEN_Y_SQUARE_PLUS_CP);  // Down
+      } else {
+	mouse_report->body.y =  -(int16_t)((y*y)>> CONFIG_ZMK_TRACK_POINT_ATTEN_Y_SQUARE_MINUS_CP); // Up
+      }
+    } else {                    // reduce strain gauge power
+      if (0 < x) {
+	mouse_report->body.x =  (int16_t)((x*x)>> CONFIG_ZMK_TRACK_POINT_ATTEN_X_SQUARE_PLUS_RP);  // Right
+      } else {
+	mouse_report->body.x = -(int16_t)((x*x)>> CONFIG_ZMK_TRACK_POINT_ATTEN_X_SQUARE_MINUS_RP); // Left
+      }
+      if (0 < y) {
+	mouse_report->body.y =  (int16_t)((y*y)>> CONFIG_ZMK_TRACK_POINT_ATTEN_Y_SQUARE_PLUS_RP);  // Down
+      } else {
+	mouse_report->body.y = -(int16_t)((y*y)>> CONFIG_ZMK_TRACK_POINT_ATTEN_Y_SQUARE_MINUS_RP); // Up
+      }
+    }
+    return mouse_report;
+}
 
 static int zmk_trackpoint_update(const struct device *trackpoint) {
     struct sensor_value state_of_charge;
@@ -37,19 +67,12 @@ static int zmk_trackpoint_update(const struct device *trackpoint) {
         return rc;
     }
 
-    if (state_of_charge.val1 != 0 || state_of_charge.val2 != 0) {
-        int32_t x, y;
-        struct zmk_hid_mouse_report *mouse_report = zmk_hid_get_mouse_report();
-        x = state_of_charge.val1;
-        y = state_of_charge.val2 * -1;
-#define xfp 40
-#define xfp2 32
-#define yfp 40
-#define yfp2 16
-        mouse_report->body.x = (int16_t)((x / xfp) ^ 3 / xfp2);
-        mouse_report->body.y = (int16_t)((y / yfp) ^ 3 / yfp2);
-        zmk_endpoints_send_mouse_report();
-    }
+    struct zmk_hid_mouse_report *mouse_report;
+    mouse_report = zmk_trackpoint_trans(state_of_charge.val1, state_of_charge.val2 * -1);
+    
+    if (mouse_report->body.x != 0 || mouse_report->body.y != 0)
+      zmk_endpoints_send_mouse_report();
+    
     return rc;
 }
 
@@ -82,7 +105,7 @@ static int zmk_trackpoint_init(const struct device *_arg) {
         return rc;
     }
 
-    k_timer_start(&trackpoint_timer, K_MSEC(50), K_MSEC(50));
+    k_timer_start(&trackpoint_timer, K_MSEC(CONFIG_ZMK_TRACK_POINT_SCAN_TIME), K_MSEC(CONFIG_ZMK_TRACK_POINT_SCAN_TIME));
 
     return 0;
 }

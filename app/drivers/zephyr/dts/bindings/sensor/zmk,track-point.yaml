@@ -17,21 +17,6 @@ properties:
       description: |
         Channels available with this divider configuration.
 
-    output-ohms:
-      type: int
-      required: true
-      description: |
-        Resistance of the lower leg of the voltage divider
-
-    full-ohms:
-      type: int
-      required: false
-      description: |
-        Resistance of the full path through the voltage divider.
-
-        If absent or zero the driver assumes that the upper leg is a
-        resistance-based sensor.
-
     power-gpios:
       type: phandle-array
       required: false

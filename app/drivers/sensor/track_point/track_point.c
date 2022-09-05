@@ -13,6 +13,7 @@
 #include <drivers/sensor.h>
 #include <logging/log.h>
 #include <stdlib.h>
+#include <zmk/usb.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -31,8 +32,6 @@ struct tp_config {
     struct io_channel_config io_channel_x;
     struct io_channel_config io_channel_y;
     struct gpio_channel_config power_gpios;
-    uint32_t output_ohm;
-    uint32_t full_ohm;
 };
 
 struct tp_data {
@@ -50,73 +49,90 @@ struct tp_data {
     uint8_t state_of_charge;
 };
 
-#define tpbufflen 32
-#define tpbuffmsk 31
-#define tpbuffsft 5
+#define tpbufflen 64 //32
+#define tpbuffmsk 63 //31
+#define tpbuffsft 6  //5
 static int16_t tp_raw_filter_x(uint16_t raw_new) {
-    static uint16_t raw_array[tpbufflen];
-    static int16_t point = 0;
+    static uint16_t raw_array[tpbufflen] = {0};
+    static uint16_t point = 0;
     static uint32_t raw_sum = 0, sqr_sum = 0;
     static int32_t temp_average = 0;
-    int16_t raw_old = raw_array[point & tpbuffmsk];
+    if (raw_new == 0) {
+      temp_average = 0;
+      return 0;
+    }
+    int16_t raw_old = raw_array[(point & tpbuffmsk)];
     int32_t average, variance;
     raw_sum -= raw_old;
     raw_sum += raw_new;
-    sqr_sum -= raw_old * raw_old;
-    sqr_sum += raw_new * raw_new;
-    raw_array[point++ & tpbuffmsk] = raw_new;
-    average = raw_sum >> tpbuffsft; /* avarage = raw_sum / 2^sizeofbuffer */
-    variance = (sqr_sum - raw_sum * average) >> tpbuffsft;
+    sqr_sum -= (raw_old * raw_old);
+    sqr_sum += (raw_new * raw_new);
+    raw_array[(point++ & tpbuffmsk)] = raw_new;
+    average = (raw_sum >> tpbuffsft);
+    variance = abs((sqr_sum - raw_sum * average) >> tpbuffsft);
 
-    if ((variance < 1000) && (temp_average == 0))
-        temp_average = average;
-    // LOG_DBG("X c%5d rab:%5d tab:%5d var:%d", raw_new, average, temp_average, variance);
-    if (3 < abs(raw_new - temp_average) && temp_average != 0)
-        return raw_new - temp_average;
-    else
-        return 0;
+    if (variance < CONFIG_ZMK_TRACK_POINT_VARIANCE) temp_average = average;
+    if ( temp_average != 0) return raw_new - temp_average;
+    else return (point & 16) * ((point & 32) ? - 4:4);
 }
 static int16_t tp_raw_filter_y(uint16_t raw_new) {
-    static uint16_t raw_array[tpbufflen];
-    static int16_t point = 0;
+    static uint16_t raw_array[tpbufflen] = {0};
+    static uint16_t point = 0;
     static uint32_t raw_sum = 0, sqr_sum = 0;
     static int32_t temp_average = 0;
-    int16_t raw_old = raw_array[point & tpbuffmsk];
+    if (raw_new == 0) {
+      temp_average = 0;
+      return 0;
+    }
+    int16_t raw_old = raw_array[(point & tpbuffmsk)];
     int32_t average, variance;
     raw_sum -= raw_old;
     raw_sum += raw_new;
-    sqr_sum -= raw_old * raw_old;
-    sqr_sum += raw_new * raw_new;
+    sqr_sum -= (raw_old * raw_old);
+    sqr_sum += (raw_new * raw_new);
     raw_array[point++ & tpbuffmsk] = raw_new;
-    average = raw_sum >> tpbuffsft; /* avarage = raw_sum / 2^sizeofbuffer */
-    variance = (sqr_sum - raw_sum * average) >> tpbuffsft;
+    average = raw_sum >> tpbuffsft;
+    variance = abs((sqr_sum - raw_sum * average) >> tpbuffsft);
 
-    if ((variance < 1000) && (temp_average == 0))
-        temp_average = average;
-    // LOG_DBG("Y c%5d rab:%5d tab:%5d var:%d", raw_new, average, temp_average, variance);
-    if (3 < abs(raw_new - temp_average) && temp_average != 0)
-        return raw_new - temp_average;
-    else
-        return 0;
+    if (variance < CONFIG_ZMK_TRACK_POINT_VARIANCE) temp_average = average;
+    if ( temp_average != 0) return raw_new - temp_average;
+    else return (point & 16) * ((point & 32) ? - 4:4);
 }
 
-#define REDUCE_POWER_CONSUMPTION
-#ifdef REDUCE_POWER_CONSUMPTION
-static int tp_power_gpio(const struct device *dev, const int val) {
+#ifdef CONFIG_ZMK_TRACK_POINT_REDUCE_POWER_CONSUMPTION
+static int tp_power_gpio(const struct device *dev, const int power) {
     int rc = 0;
 #if DT_INST_NODE_HAS_PROP(0, power_gpios)
     const struct tp_data *drv_data = dev->data;
     const struct tp_config *drv_cfg = dev->config;
+    static bool reduce_mode = true;
+    int out = power;
+    
+    if (zmk_usb_is_powered()) {
+      out = 1;
+      if (reduce_mode) {
+	reduce_mode = false;
+	rc = tp_raw_filter_x(0);
+	rc = tp_raw_filter_y(0);
+      }
+    } else {
+      if (!reduce_mode) {
+	reduce_mode = true;
+	rc = tp_raw_filter_x(0);
+	rc = tp_raw_filter_y(0);
+      }
+    }
+
     if (drv_data->gpio) {
-        int rc = gpio_pin_set(drv_data->gpio, drv_cfg->power_gpios.pin, val);
+        int rc = gpio_pin_set(drv_data->gpio, drv_cfg->power_gpios.pin, out);
         if (rc != 0) {
-            LOG_DBG("Failed to %d ADC power GPIO: %d", val, rc);
+            LOG_DBG("Failed to %d ADC power GPIO: %d", out, rc);
         }
     }
 #endif /* power_gpios */
     return rc;
 }
-#endif /* REDUCE_POWER_CONSUMPTION */
+#endif /* CONFIG_ZMK_TRACK_POINT_REDUCE_POWER_CONSUMPTION */
 
 static int tp_sample_fetch(const struct device *dev, enum sensor_channel chan) {
     struct tp_data *drv_data = dev->data;
@@ -130,13 +146,14 @@ static int tp_sample_fetch(const struct device *dev, enum sensor_channel chan) {
         return -ENOTSUP;
     }
 
-#ifdef REDUCE_POWER_CONSUMPTION
+#ifdef CONFIG_ZMK_TRACK_POINT_REDUCE_POWER_CONSUMPTION
     rc = tp_power_gpio(dev, 1);
     if (rc != 0)
         return rc;
     // wait for any capacitance to charge up
-    k_sleep(K_MSEC(1));
-#endif /* REDUCE_POWER_CONSUMPTION */
+    if (CONFIG_ZMK_TRACK_POINT_POWER_CHARGE_UP_TIME != 0)
+      k_sleep(K_MSEC(CONFIG_ZMK_TRACK_POINT_POWER_CHARGE_UP_TIME));
+#endif /* CONFIG_ZMK_TRACK_POINT_REDUCE_POWER_CONSUMPTION */
 
     // Read ADC
     rc = adc_read(drv_data->adc_x, as_x);
@@ -152,11 +169,11 @@ static int tp_sample_fetch(const struct device *dev, enum sensor_channel chan) {
     }
     as_y->calibrate = false;
 
-#ifdef REDUCE_POWER_CONSUMPTION
+#ifdef CONFIG_ZMK_TRACK_POINT_REDUCE_POWER_CONSUMPTION
     rc = tp_power_gpio(dev, 0);
     if (rc != 0)
         return rc;
-#endif /* REDUCE_POWER_CONSUMPTION */
+#endif /* CONFIG_ZMK_TRACK_POINT_REDUCE_POWER_CONSUMPTION */
     drv_data->voltage_x = tp_raw_filter_x(drv_data->adc_raw_x);
     drv_data->voltage_y = tp_raw_filter_y(drv_data->adc_raw_y);
 
@@ -302,8 +319,6 @@ static const struct tp_config tp_cfg = {
             DT_INST_GPIO_FLAGS(0, power_gpios),
         },
 #endif
-    .output_ohm = DT_INST_PROP(0, output_ohms),
-    .full_ohm = DT_INST_PROP(0, full_ohms),
 };
 
 DEVICE_DT_INST_DEFINE(0, &tp_init, device_pm_control_nop, &tp_data, &tp_cfg, POST_KERNEL,
