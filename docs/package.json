@@ -18,7 +18,7 @@
     "@docusaurus/preset-classic": "^2.0.0-beta.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
-    "@fortawesome/react-fontawesome": "^0.1.14",
+    "@fortawesome/react-fontawesome": "^0.1.17",
     "classnames": "^2.2.6",
     "react": "^17.0.2",
     "react-async": "^10.0.1",
@@ -42,7 +42,7 @@
   "devDependencies": {
     "eslint": "^7.25.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-mdx": "^1.13.0",
+    "eslint-plugin-mdx": "^2.0.3",
     "eslint-plugin-react": "^7.23.2",
     "null-loader": "^4.0.0",
     "prettier": "2.3.1",
