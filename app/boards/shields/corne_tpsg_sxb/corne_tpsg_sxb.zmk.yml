@@ -1,0 +1,21 @@
+file_format: "1"
+id: corne_tpsg_sxb
+name: corne_tpsg_sxb
+type: shield
+url: https://github.com/foostan/crkbd/tree/main/corne-chocolate
+requires: [seeeduino_xiao_ble]
+exposes:
+  - i2c_oled
+  - gpio
+  - power
+  - ground
+features:
+  - keys
+  - display
+  - underglow
+  - encoder
+  - pointer
+  - trackball
+siblings:
+  - corne_left
+  - corne_right

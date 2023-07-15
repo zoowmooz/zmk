@@ -15,7 +15,7 @@ features:
   - underglow
   - encoder
   - pointer
-  - trackball
+  - trackpoint
 siblings:
-  - corne_left
-  - corne_right
+  - wings42_sg_left
+  - wings42_sg_right

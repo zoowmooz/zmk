@@ -1,0 +1,26 @@
+if SHIELD_WINGS42_TPSG_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "Wings42_TPSG L"
+
+endif
+
+if SHIELD_WINGS42_TPSG_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "Wings42_TPSG"
+	
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+	
+endif
+
+if SHIELD_WINGS42_TPSG_LEFT || SHIELD_WINGS42_TPSG_RIGHT
+
+config ZMK_SPLIT
+	default y
+
+config ZMK_KSCAN_COMPOSITE_DRIVER
+	default y
+
+endif

@@ -1,9 +1,9 @@
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-description: TrackPoint driver
+description: Trackpoint Strain Gauge driver
 
-compatible: "zmk,track-point"
+compatible: "zmk,trackpoint-strain-gauge"
 
 
 properties:
@@ -21,7 +21,7 @@ properties:
       type: phandle-array
       required: false
       description: |
-        Control power to the voltage divider inputs.
+        Control power to the strain gauge wheatstone bridge and op-amp.
 
         If present the corresponding GPIO must be set to an active level
-        to enable the divider input.
+        to enable it.

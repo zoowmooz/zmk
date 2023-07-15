@@ -1,0 +1,43 @@
+/*
+ * Copyright (c) 2022 KyouTansan
+ * SPDX-License-Identifier: MIT
+ */
+#include "corne_tpsg_sxb.dtsi"
+&default_transform {	col-offset = <0>;};
+&kscan0 {
+	col-gpios
+		= <&xiao_d 9  GPIO_ACTIVE_HIGH>
+		, <&xiao_d 8  GPIO_ACTIVE_HIGH>
+		, <&xiao_d 7  GPIO_ACTIVE_HIGH>
+		, <&xiao_d 15 GPIO_ACTIVE_HIGH>
+		, <&xiao_d 11 GPIO_ACTIVE_HIGH>
+		, <&xiao_d 12 GPIO_ACTIVE_HIGH>
+		;
+};
+
+&adc {
+	status = "okay";
+};
+
+&xiao_d {
+compatible = "seeed,xiao-gpio";
+		#gpio-cells = <2>;
+		gpio-map-mask = <0xffffffff 0xffffffc0>;
+		gpio-map-pass-thru = <0 0x3f>;
+		gpio-map
+			= <0  0 &gpio0 2 0>		/* D0/A0 LED */
+			, <1  0 &gpio0 3 0>		/* D1/A1 for strain gauge x */
+			, <2  0 &gpio0 28 0>		/* D2/A2 for strain gauge y */
+			, <3  0 &gpio0 29 0>		/* D3/A3 R3 */
+			, <11  0 &gpio0 4 0>		/* D4/A4 SDA */
+			, <12  0 &gpio0 5 0>		/* D5/A5 SCL */
+			, <6  0 &gpio1 11 0>		/* D6    R0 */
+			, <7  0 &gpio1 12 0>		/* D7    C2 */
+			, <8  0 &gpio1 13 0>		/* D8    C1 */
+			, <9  0 &gpio1 14 0>		/* D9    C0 */
+			, <10 0 &gpio1 15 0>		/* D10   R2 */
+			, <14 0 &gpio0 9 0>		/* N1    R1 orig NFC1 */
+			, <15 0 &gpio0 10 0>		/* N2    C3 orig NFC2 */
+			;
+};
+

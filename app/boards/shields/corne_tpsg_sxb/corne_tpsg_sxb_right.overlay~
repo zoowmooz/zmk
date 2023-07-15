@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2022 KyouTansan
+ * SPDX-License-Identifier: MIT
+ */
+#include "corne_tpsg_sxb.dtsi"
+&default_transform {	col-offset =    <6>;};
+&kscan0 {
+	col-gpios
+		= <&xiao_d 12 GPIO_ACTIVE_HIGH>
+		, <&xiao_d 11 GPIO_ACTIVE_HIGH>
+		, <&xiao_d 15 GPIO_ACTIVE_HIGH>
+		, <&xiao_d 7  GPIO_ACTIVE_HIGH>
+		, <&xiao_d 8  GPIO_ACTIVE_HIGH>
+		, <&xiao_d 9  GPIO_ACTIVE_HIGH>
+		;
+};
+
+&adc {
+	status = "okay";
+};

@@ -3,3 +3,5 @@
 
 rsource "battery/Kconfig"
 rsource "ec11/Kconfig"
+rsource "trackpoint_tpsg/Kconfig"
+

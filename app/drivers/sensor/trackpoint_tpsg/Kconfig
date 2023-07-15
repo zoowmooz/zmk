@@ -1,0 +1,194 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config ZMK_TPSG
+	bool "ZMK track point strain gauge"
+	select ADC
+	help
+	  Enable ZMK track point driver with strain gauge.
+
+config ZMK_TPSG_VARIANCE
+	int "zmk track point value calibration"
+	default 10
+	help
+	  Calibration strain gauge value by variance of ADC value.
+	  
+config ZMK_TPSG_SCAN_TIME
+	int "ZMK track point scan period"
+	default 50
+	help
+	  msec.
+	
+config ZMK_TPSG_REDUCE_POWER_CONSUMPTION
+       bool "Reduce power for zmk track point strain gauge."
+       help
+	 Reduce power consumption of ZMK track point strain gauge.
+
+config ZMK_TPSG_REDUCE_POWER_CONSUMPTION_USB
+       bool "The zmk trackpoint strain gauge also reduces USB power."
+       help
+	 Reduce power consumption of ZMK track point strain gauge anytime.
+
+config ZMK_TPSG_POWER_CHARGE_UP_TIME
+       int "Init charge up time for strain gauge and OPAmp"
+       default 0
+       help
+         Init charge up time for strain gauge and ope-amp.
+
+#config ZMK_TPSG_WHEASTONE_BRIDGE_TUNING
+#       bool "The zmk trackpoint strain gauge tuning."
+#       help
+#	 Set value as target.
+
+
+config ZMK_TPSG_ATTEN_X_SQUARE_PLUS_CP
+       int "X-squared attenuation due to Wheatstone bridge for plus/right area while constant power consumption mode"
+       default 13
+       help
+         X-squared attenuation due to Wheatstone bridge for plus/right area while constant power consumption mode.
+
+config ZMK_TPSG_ATTEN_X_SQUARE_MINUS_CP
+       int "X-squared attenuation due to Wheatstone bridge for minus/left area while constant power consumption mode"
+       default 13
+       help
+         X-squared attenuation due to Wheatstone bridge for minus/left area while constant power consumption mode.
+
+config ZMK_TPSG_ATTEN_Y_SQUARE_PLUS_CP
+       int "Y-squared attenuation due to Wheatstone bridge for plus/down area while constant power consumption mode"
+       default 13
+       help
+         Y-squared attenuation due to Wheatstone bridge for plus/down area while constant power consumption mode.
+
+config ZMK_TPSG_ATTEN_Y_SQUARE_MINUS_CP
+       int "Y-squared attenuation due to Wheatstone bridge for minus/up area while constant power consumption mode"
+       default 13
+       help
+         Y-squared attenuation due to Wheatstone bridge for minus/up area while constant power consumption mode.
+
+
+config ZMK_TPSG_ATTEN_X_SQUARE_PLUS_RP
+       int "X-squared attenuation due to Wheatstone bridge for plus/right area while reduce power consumption mode"
+       default 10
+       help
+         X-squared attenuation due to Wheatstone bridge for plus/right area while reduce power consumption mode.
+
+config ZMK_TPSG_ATTEN_X_SQUARE_MINUS_RP
+       int "X-squared attenuation due to Wheatstone bridge for minus/left area while reduce power consumption mode"
+       default 13
+       help
+         X-squared attenuation due to Wheatstone bridge for minus/left area while reduce power consumption mode.
+
+config ZMK_TPSG_ATTEN_Y_SQUARE_PLUS_RP
+       int "Y-squared attenuation due to Wheatstone bridge for plus/down area while reduce power consumption mode"
+       default 12
+       help
+         Y-squared attenuation due to Wheatstone bridge for plus/down area while reduce power consumption mode.
+
+config ZMK_TPSG_ATTEN_Y_SQUARE_MINUS_RP
+       int "Y-squared attenuation due to Wheatstone bridge for minus/up area while reduce power consumption mode"
+       default 11
+       help
+         Y-squared attenuation due to Wheatstone bridge for minus/up area while reduce power consumption mode.
+
+
+# -------------------------------------------------------------------------------------------------------------------
+config ZMK_TPSG_AXPC
+       int "X-squared attenuation due to Wheatstone bridge for plus/right area while constant power consumption mode"
+       default 13
+       help
+         X-squared attenuation due to Wheatstone bridge for plus/right area while constant power consumption mode.
+
+config ZMK_TPSG_AXMC
+       int "X-squared attenuation due to Wheatstone bridge for minus/left area while constant power consumption mode"
+       default 13
+       help
+         X-squared attenuation due to Wheatstone bridge for minus/left area while constant power consumption mode.
+
+config ZMK_TPSG_AYPC
+       int "Y-squared attenuation due to Wheatstone bridge for plus/down area while constant power consumption mode"
+       default 13
+       help
+         Y-squared attenuation due to Wheatstone bridge for plus/down area while constant power consumption mode.
+
+config ZMK_TPSG_AYMC
+       int "Y-squared attenuation due to Wheatstone bridge for minus/up area while constant power consumption mode"
+       default 13
+       help
+         Y-squared attenuation due to Wheatstone bridge for minus/up area while constant power consumption mode.
+
+config ZMK_TPSG_AXPR
+       int "X-squared attenuation due to Wheatstone bridge for plus/right area while reduce power consumption mode"
+       default 10
+       help
+         X-squared attenuation due to Wheatstone bridge for plus/right area while reduce power consumption mode.
+
+config ZMK_TPSG_AXMR
+       int "X-squared attenuation due to Wheatstone bridge for minus/left area while reduce power consumption mode"
+       default 13
+       help
+         X-squared attenuation due to Wheatstone bridge for minus/left area while reduce power consumption mode.
+
+config ZMK_TPSG_AYPR
+       int "Y-squared attenuation due to Wheatstone bridge for plus/down area while reduce power consumption mode"
+       default 12
+       help
+         Y-squared attenuation due to Wheatstone bridge for plus/down area while reduce power consumption mode.
+
+config ZMK_TPSG_AYMR
+       int "Y-squared attenuation due to Wheatstone bridge for minus/up area while reduce power consumption mode"
+       default 11
+       help
+         Y-squared attenuation due to Wheatstone bridge for minus/up area while reduce power consumption mode.
+
+
+# -------------------------------------------------------------------------------------------------------------------
+config ZMK_TPSG_BXPC
+       int "X attenuation due to Wheatstone bridge for plus/right area while constant power consumption mode"
+       default 1
+       help
+         X attenuation due to Wheatstone bridge for plus/right area while constant power consumption mode.
+
+config ZMK_TPSG_BXMC
+       int "X attenuation due to Wheatstone bridge for minus/left area while constant power consumption mode"
+       default 1
+       help
+         X attenuation due to Wheatstone bridge for minus/left area while constant power consumption mode.
+
+config ZMK_TPSG_BYPC
+       int "Y attenuation due to Wheatstone bridge for plus/down area while constant power consumption mode"
+       default 1
+       help
+         Y attenuation due to Wheatstone bridge for plus/down area while constant power consumption mode.
+
+config ZMK_TPSG_BYMC
+       int "Y attenuation due to Wheatstone bridge for minus/up area while constant power consumption mode"
+       default 1
+       help
+         Y attenuation due to Wheatstone bridge for minus/up area while constant power consumption mode.
+
+config ZMK_TPSG_BXPR
+       int "X attenuation due to Wheatstone bridge for plus/right area while reduce power consumption mode"
+       default 2
+       help
+         X attenuation due to Wheatstone bridge for plus/right area while reduce power consumption mode.
+
+config ZMK_TPSG_BXMR
+       int "X attenuation due to Wheatstone bridge for minus/left area while reduce power consumption mode"
+       default 5
+       help
+         X attenuation due to Wheatstone bridge for minus/left area while reduce power consumption mode.
+
+config ZMK_TPSG_BYPR
+       int "Y attenuation due to Wheatstone bridge for plus/down area while reduce power consumption mode"
+       default 7
+       help
+         Y attenuation due to Wheatstone bridge for plus/down area while reduce power consumption mode.
+
+config ZMK_TPSG_BYMR
+       int "Y attenuation due to Wheatstone bridge for minus/up area while reduce power consumption mode"
+       default 5
+       help
+         Y attenuation due to Wheatstone bridge for minus/up area while reduce power consumption mode.
+
+
+
