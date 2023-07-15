@@ -1,0 +1,48 @@
+/*
+ * Copyright (c) 2022 KyouTansan
+ * SPDX-License-Identifier: MIT
+ */
+#include "corne_tpsg_sxb.dtsi"
+&default_transform {	col-offset =    <6>;};
+&kscan0 {
+	col-gpios
+		= <&xiao_d 12 GPIO_ACTIVE_HIGH>
+		, <&xiao_d 11 GPIO_ACTIVE_HIGH>
+		, <&xiao_d 15 GPIO_ACTIVE_HIGH>
+		, <&xiao_d 7  GPIO_ACTIVE_HIGH>
+		, <&xiao_d 8  GPIO_ACTIVE_HIGH>
+		, <&xiao_d 9  GPIO_ACTIVE_HIGH>
+		;
+};
+
+&adc {
+	status = "okay";
+};
+
+// #include <dt-bindings/led/led.h>
+// &spi1 {
+//   compatible = "nordic,nrf-spim";
+//   status = "okay";
+//   //mosi-pin = <47>; /* 32x + y ex. D10(P1.15)=47 */
+//   mosi-pin = <2>; /* 32x + y ex. D0(P0.02)=2 */
+//   // Unused pins, needed for SPI definition, but not used by the ws2812 driver itself.
+//   sck-pin = <8>;
+//   miso-pin = <12>;
+
+//   led_strip: ws2812@0 {
+//     compatible = "worldsemi,ws2812-spi";
+//     label = "WS2812";
+
+//     /* SPI */
+//     reg = <0>; /* ignored, but necessary for SPI bindings */
+//     spi-max-frequency = <4000000>;
+
+//     /* WS2812 */
+//     chain-length = <27>; /* number of LEDs */
+//     spi-one-frame = <0x70>;
+//     spi-zero-frame = <0x40>;
+// //    color-mapping = <LED_COLOR_ID_GREEN
+// //                          LED_COLOR_ID_RED
+// //                          LED_COLOR_ID_BLUE>;
+//   };
+// };

@@ -1,0 +1,8 @@
+# Copyright (c) 2022 KyouTansan
+# SPDX-License-Identifier: MIT
+
+config SHIELD_CORNE_TPSG_SXB_LEFT
+	def_bool $(shields_list_contains,corne_tpsg_sxb_left)
+
+config SHIELD_CORNE_TPSG_SXB_RIGHT
+	def_bool $(shields_list_contains,corne_tpsg_sxb_right)

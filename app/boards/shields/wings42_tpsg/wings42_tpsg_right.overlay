@@ -1,0 +1,35 @@
+/*
+ * Copyright (c) 2022 KyouTansan
+ * SPDX-License-Identifier: MIT
+ */
+#include "wings42_tpsg.dtsi"
+&default_transform {	col-offset =    <7>;};
+&kscan0 {
+		direct1: direct1 {	kscan = <&direct_scan>;	column-offset = <0>;	};
+		matrix1: matrix1 {	kscan = <&kscan1>;	column-offset = <1>;	};
+};
+&kscan1 {
+	col-gpios
+		= <&pro_micro   11 GPIO_ACTIVE_HIGH> /* extended */
+		, <&pro_micro   12 GPIO_ACTIVE_HIGH> /* extended */
+		, <&pro_micro   17 GPIO_ACTIVE_HIGH> /* extended */
+		, <&pro_micro   18 GPIO_ACTIVE_HIGH>
+		, <&pro_micro   15 GPIO_ACTIVE_HIGH>
+		, <&pro_micro   14 GPIO_ACTIVE_HIGH>
+		;
+};
+&direct_scan {
+	debounce-period = <50>;
+	input-gpios = <&pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+	status = "okay";
+};
+//Disable encoder 20220804 for measurement power consumption
+// &right_encoder {
+// 	a-gpios = <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+// 	b-gpios = <&pro_micro 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+// 	resolution = <2>;
+// 	status = "okay";
+// };
+//&sensors {
+//	status = "okay";
+//};

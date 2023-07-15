@@ -7,6 +7,7 @@
 	chosen {
 		zmk,kscan = &kscan0;
 		zmk,matrix_transform = &default_transform;
+		zmk,underglow = &led_strip;
 	};
 	default_transform: keymap_transform_0 {
 		compatible = "zmk,matrix-transform";
@@ -24,32 +25,34 @@ RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)  RC(2,6) RC(3,7)  RC(2,8) RC(2,9
 		label = "KSCAN0";
 		diode-direction = "col2row";
 		row-gpios
-			= <&xiao_d 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&xiao_d 9  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&xiao_d 8  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&xiao_d 7  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			= <&xiao_d 6  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&xiao_d 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&xiao_d 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&xiao_d 3  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 			;
 	};
 	vbatt {
 		compatible = "zmk,battery-voltage-divider";
 		label = "BATTERY";
 		io-channels = <&adc 7>;
-		power-gpios = <&gpio0 14 (GPIO_OPEN_DRAIN | GPIO_ACTIVE_LOW)>;
+		power-gpios = <&gpio0 31 (GPIO_OPEN_DRAIN | GPIO_ACTIVE_LOW)>;
 		output-ohms = <1000000>;
 		full-ohms = <(1000000 + 510000)>;
 		status = "ok";
 	};
 	tpoint {
-		compatible = "zmk,track-point";
-		label = "TRACKPOINT";
-		io-channels = <&adc 0>,<&adc 1>;
-		output-ohms = <1000>;
-		full-ohms = <(1000 + 345)>;
+//		compatible = "zmk,track-point";
+		compatible = "zmk,trackpoint-strain-gauge";
+//		label = "TRACKPOINT";
+		label = "TRACKPOINT_TPSG";
+		io-channels = <&adc 1>,<&adc 4>;
+//		output-ohms = <1000>;
+//		full-ohms = <(1000 + 345)>;
 		power-gpios {
 		    label = "ADC_POWER";
-		    pin = <2>;
+		    pin = <13>;
 		    flags = <0>;
 		    };
-		power-gpios = <&gpio0 2 0>;
+		power-gpios = <&gpio0 16 0>;
 	};
 };

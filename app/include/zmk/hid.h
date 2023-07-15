@@ -131,7 +131,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* Consumer Page */
     HID_MI_COLLECTION,
     COLLECTION_APPLICATION,
-    /* REPORT ID (1) */
+    /* REPORT ID (2) */
     HID_GI_REPORT_ID,
     0x02,
     /* USAGE_PAGE (Consumer) */
@@ -145,12 +145,12 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* LOGICAL_MAXIMUM (0xFFFF) */
     HID_GI_LOGICAL_MAX(1),
     0xFF,
+    /* LOGICAL_MINIMUM (0) */
     HID_LI_USAGE_MIN(1),
     0x00,
     /* USAGE_MAXIMUM (0xFFFF) */
     HID_LI_USAGE_MAX(1),
     0xFF,
-    /* INPUT (Data,Ary,Abs) */
     /* REPORT_SIZE (8) */
     HID_GI_REPORT_SIZE,
     0x08,
@@ -168,7 +168,6 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_LI_USAGE_MAX(2),
     0xFF,
     0xFF,
-    /* INPUT (Data,Ary,Abs) */
     /* REPORT_SIZE (16) */
     HID_GI_REPORT_SIZE,
     0x10,
@@ -178,6 +177,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* REPORT_COUNT (CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE) */
     HID_GI_REPORT_COUNT,
     CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE,
+    /* INPUT (Data,Ary,Abs) */
     HID_MI_INPUT,
     0x00,
     /* END COLLECTION */
@@ -222,9 +222,15 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* REPORT_COUNT (16) */
     HID_GI_REPORT_COUNT,
     0x10,
+/* #if IS_ENABLED(CONFIG_ZMK_SG) */
+/*     /\* INPUT (Data,Var,Rel) *\/ */
+/*     HID_MI_INPUT, */
+/*     0x06, */
+/* #else */
     /* INPUT (Data,Var,Abs) */
     HID_MI_INPUT,
-    0x06, /* mouse relative movement */
+    0x02,
+/* #endif */
     /* USAGE_PAGE (Generic Desktop) */
     HID_GI_USAGE_PAGE,
     HID_USAGE_GD,
