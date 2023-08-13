@@ -79,15 +79,15 @@ struct zmk_hid_mouse_report *zmk_tpsg_trans(int32_t x, int32_t y) {
 	    (int16_t)(((y * y) >> CONFIG_ZMK_TPSG_AYMR) + (y >> CONFIG_ZMK_TPSG_BYMR)); // Up
       }
     }
-#define CONFIG_ZMK_TPSG_GAIN_TUNING 
+//#define CONFIG_ZMK_TPSG_GAIN_TUNING
 #ifdef CONFIG_ZMK_TPSG_GAIN_TUNING
-  LOG_DBG("trans %6d %6d %6d %6d", x, y, mouse_report->body.x, mouse_report->body.y);
+  LOG_DBG("GAIN TUNING %6d %6d %6d %6d", x, y, mouse_report->body.x, mouse_report->body.y);
 #endif /* CONFIG_ZMK_TPSG_GAIN_TUNING */
   return mouse_report;
 }
 
 static int zmk_tpsg_update(const struct device *tpsg) {
-#if 1
+#if 0
     static int count = 0;
 #endif    
     struct sensor_value state_of_charge;

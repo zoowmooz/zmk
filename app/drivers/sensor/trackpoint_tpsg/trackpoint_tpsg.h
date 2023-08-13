@@ -69,7 +69,7 @@ struct tpsg_data {
       raw_array[(point++ & TPSG_VAR_BUF_MSK)] = raw_new;		\
       moving_average = (raw_sum >> TPSG_VAR_BUF_SFT);			\
       variance = abs((sqr_sum - raw_sum * moving_average) >> TPSG_VAR_BUF_SFT);	\
-      if ((variance < CONFIG_ZMK_TPSG_VARIANCE)	)			\
+      if ((long_average == 0) && (variance < CONFIG_ZMK_TPSG_VARIANCE)	)			\
 	{								\
 	  if (debug_x)							\
 	    LOG_DBG("TPSG x                                       %8d %8d %8d %10d", raw_new, moving_average, long_average, variance); \

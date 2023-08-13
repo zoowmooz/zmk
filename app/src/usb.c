@@ -74,6 +74,7 @@ int zmk_usb_hid_send_report(const uint8_t *report, size_t len) {
 	}
       }
     }
+    return 0;
 }
 
 #endif /* CONFIG_ZMK_USB */
