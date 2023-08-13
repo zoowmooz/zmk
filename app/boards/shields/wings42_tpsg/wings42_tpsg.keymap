@@ -136,10 +136,10 @@
 //							-------------------------------------------------			-------------------------------------------------
 			bindings = <
 	&kp ESC		&kp Q		&kp W		&kp E		&kp R	 	&kp T		&none		&kp B	&kp Y		&kp U		&kp I		&kp O		&kp P		&kp RET
-//	&kp LCTRL	&hm LCTRL A	&kp S		&kp D		&kp F		&kp G		&none		&none	&kp H		&kp J		&kp K		&kp L		&hm RCTRL SEMI	&kp RCTRL
-	&kp LCTRL	&kp A		&kp S		&kp D		&kp F		&kp G		&none		&none	&kp H		&kp J		&kp K		&kp L		&kp SEMI	&kp LCTRL
-//	&kp LSHFT	&hm LSHFT Z	&kp X		&kp C		&kp V		&kp B		&none		&none	&kp N		&kp M		&kp COMMA	&kp DOT		&hm RSHFT FSLH	&kp RSHFT
-	&kp LSHFT	&kp Z		&kp X		&kp C		&kp V		&kp B		&none		&none	&kp N		&kp M		&kp COMMA	&kp DOT		&kp RSHFT	&kp RSHFT	
+	&kp LCTRL	&hm LCTRL A	&kp S		&kp D		&kp F		&kp G		&none		&none	&kp H		&kp J		&kp K		&kp L		&hm RCTRL SEMI	&kp RCTRL
+//	&kp LCTRL	&kp A		&kp S		&kp D		&kp F		&kp G		&none		&none	&kp H		&kp J		&kp K		&kp L		&kp SEMI	&kp LCTRL
+	&kp LSHFT	&hm LSHFT Z	&kp X		&kp C		&kp V		&kp B		&none		&none	&kp N		&kp M		&kp COMMA	&kp DOT		&hm RSHFT FSLH	&kp RSHFT
+//	&kp LSHFT	&kp Z		&kp X		&kp C		&kp V		&kp B		&none		&none	&kp N		&kp M		&kp COMMA	&kp DOT		&kp FSLH	&kp RSHFT	
 							&mt LGUI ESC	&kp LALT	&mkp MB1	&none		&none	&lt 3 SPACE	&mo 1		&mo 2
 //							&mt LGUI ESC	&kp LALT	&kp LCTRL	&none		&none	&lt 3 SPACE	&mo 1		&mo 2
 		>;
