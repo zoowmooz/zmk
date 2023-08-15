@@ -30,7 +30,6 @@ K_WORK_DEFINE(usb_status_notifier_work, raise_usb_status_changed_event);
 
 static const struct device *hid_dev;
 
-//static K_SEM_DEFINE(hid_sem, 1, 1);
 static K_SEM_DEFINE(hid_sem, 1, 1);
 
 static void in_ready_cb(const struct device *dev) { k_sem_give(&hid_sem); }
@@ -40,7 +39,6 @@ static const struct hid_ops ops = {
 };
 
 int zmk_usb_hid_send_report(const uint8_t *report, size_t len) {
-    int err;
     switch (usb_status) {
     case USB_DC_SUSPEND:
         return usb_wakeup_request();
@@ -50,31 +48,15 @@ int zmk_usb_hid_send_report(const uint8_t *report, size_t len) {
     case USB_DC_UNKNOWN:
         return -ENODEV;
     default:
-      /* k_sem_take(&hid_sem, K_MSEC(30)); */
-      /* err = hid_int_ep_write(hid_dev, report, len, NULL); */
-      
-      /* if (err) { */
-      /* 	k_sem_give(&hid_sem); */
-      /* 	LOG_ERR("k_sem_take err = %d count=%d",err, k_sem_count_get(&hid_sem)); */
-      /* } else { */
-      /* 	LOG_ERR("k_sem_take ok  = %d count=%d",err, k_sem_count_get(&hid_sem)); */
-      /* } */
-      
-      err = k_sem_take(&hid_sem, K_MSEC(30));
-      if (err) {
-	//LOG_ERR("k_sem_take err       = %d count=%d",err, k_sem_count_get(&hid_sem));
-	return err;
-      } else {
-	//LOG_DBG("k_sem_take ok        = %d count=%d",err, k_sem_count_get(&hid_sem));
-        err = hid_int_ep_write(hid_dev, report, len, NULL);
-	k_sem_give(&hid_sem);
-	if (err) {
-	  //LOG_ERR("hid_int_ep_write NG  = %d count=%d",err, k_sem_count_get(&hid_sem));
-	  return err;
-	}
-      }
+        k_sem_take(&hid_sem, K_MSEC(30));
+        int err = hid_int_ep_write(hid_dev, report, len, NULL);
+
+        if (err) {
+            k_sem_give(&hid_sem);
+        }
+
+        return err;
     }
-    return 0;
 }
 
 #endif /* CONFIG_ZMK_USB */
@@ -82,7 +64,7 @@ int zmk_usb_hid_send_report(const uint8_t *report, size_t len) {
 enum usb_dc_status_code zmk_usb_get_status() { return usb_status; }
 
 enum zmk_usb_conn_state zmk_usb_get_conn_state() {
-  //LOG_DBG("state: %d", usb_status);
+    LOG_DBG("state: %d", usb_status);
     switch (usb_status) {
     case USB_DC_DISCONNECTED:
     case USB_DC_UNKNOWN:

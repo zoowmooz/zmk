@@ -141,7 +141,7 @@
 	&kp LSHFT	&hm LSHFT Z	&kp X		&kp C		&kp V		&kp B		&none		&none	&kp N		&kp M		&kp COMMA	&kp DOT		&hm RSHFT FSLH	&kp RSHFT
 //	&kp LSHFT	&kp Z		&kp X		&kp C		&kp V		&kp B		&none		&none	&kp N		&kp M		&kp COMMA	&kp DOT		&kp FSLH	&kp RSHFT	
 							&mt LGUI ESC	&kp LALT	&mkp MB1	&none		&none	&lt 3 SPACE	&mo 1		&mo 2
-//							&mt LGUI ESC	&kp LALT	&kp LCTRL	&none		&none	&lt 3 SPACE	&mo 1		&mo 2
+//							&mt LGUI ESC	&kp LALT	&kp LCTRL	o&none		&none	&lt 3 SPACE	&mo 1		&mo 2
 		>;
 // Disable encoder 20220804 for measurement power consumption
 //			sensor-bindings = <&inc_dec_kp UP DOWN>;
@@ -173,12 +173,12 @@
 		};
 		nav_layer { /* Navigation */	/* L3 */
 			bindings = <
-//	&trans		&none		&none		&kp END		&mkp MB3	&kp PGUP	&none		&kp LEFT &none		&kp PGUP	&kp  TAB	 &mwh SCROLL_UP	  &kp  UP	    &trans
-	&trans		&none		&none		&kp END		&mkp MB3	&kp PGUP	&none		&kp LEFT &none		&kp PGUP	&kp  TAB	 &kp PGUP	  &kp  UP	    &trans
-//	&trans		&hm LCTRL HOME 	&none	  	&kp DEL		&kp RIGHT	&kp PGDN	&none		&none	 &kp BSPC	&kp RET		&mwh SCROLL_LEFT &mwh SCROLL_DOWN &mwh SCROLL_RIGHT &trans	
-	&trans		&kp HOME 	&none	  	&kp DEL		&kp RIGHT	&kp PGDN	&none		&none	 &kp BSPC	&kp RET		&none		 &kp PGDN	  &none		    &trans
-	&trans		&kp LSHFT	&none		&kp PSCRN	&mkp MB2	&kp LEFT	&none		&none	 &kp DOWN	&kp PGDN	&mkp MB3	 &mkp MB2	  &mkp MB1	    &none		
-						 	&trans		&trans		&trans		&none		&none	&trans		&trans		&trans
+	&trans		&none		&none		&kp END		&mkp MB3	&kp PGUP	&none		&kp LEFT &none		&kp PGUP	&kp  TAB	 &mwh SCROLL_UP	  &kp  UP	    &trans
+//	&trans		&none		&none		&kp END		&mkp MB3	&kp PGUP	&none		&kp LEFT &none		&kp PGUP	&kp  TAB	 &kp PGUP	  &kp  UP	    &trans
+	&trans		&kp HOME 	&kp PSCRN  	&kp DEL		&kp RIGHT	&kp PGDN	&none		&none	 &kp BSPC	&kp RET		&mwh SCROLL_LEFT &mwh SCROLL_DOWN &mwh SCROLL_RIGHT &trans
+//	&trans		&kp HOME 	&kp PSCRN  	&kp DEL		&kp RIGHT	&kp PGDN	&none		&none	 &kp BSPC	&kp RET		&none		 &kp PGDN	  &none		    &trans
+	&trans		&kp LSHFT	&mkp MB3	&mkp MB2	&mkp MB1	&kp LEFT	&none		&none	 &kp DOWN	&kp PGDN	&mkp MB3	 &mkp MB2	  &mkp MB1	    &none
+						 	&trans		&trans		&trans		&none		&none	 &trans		&trans		&trans
 		>;
 //			sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
 		};
