@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 The ZMK Contributors
+ * Copyright (c) 2023`nhh The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -26,22 +26,28 @@ struct k_timer *tpsg_timer_p;
 
 struct zmk_hid_mouse_report *zmk_tpsg_trans(int32_t x, int32_t y) {
   struct zmk_hid_mouse_report *mouse_report = zmk_hid_get_mouse_report();
-  if ((x == 16384) || (y == 16384)) {
+  if (x == 16384||y == 16384) {
     static int loop = 0;
-    loop++;
-#define vertbit 16
-#define horibit 8
-    mouse_report->body.x = 1 /*(loop & vertbit) ? -1:1*/ ;
-    mouse_report->body.y = loop & vertbit /*((loop & horibit) ^ (loop & vertbit))*/ ? -1:1;
-    //mouse_report->body.y = 1;
-    /*
-    00; up	right
-    01; up	left
-    10; down	left  LOG_DBG("trans before xy %6d %6d", x, y);
-
-    11; down	right
-    */
+    switch((loop++>>3)&3){
+    case 0:
+      mouse_report->body.x =  1;
+      mouse_report->body.y = -1;
+      break;
+    case 1:
+      mouse_report->body.x = -1;
+      mouse_report->body.y = -1;
+      break;
+    case 2:
+      mouse_report->body.x = -1;
+      mouse_report->body.y =  1;
+      break;
+    case 3:
+      mouse_report->body.x =  1;
+      mouse_report->body.y =  1;
+      break;
+    }
     return mouse_report;
+
   }
   if (zmk_usb_is_powered()) { // constant strain gauge power zmk_usb_get_conn_state CONFIG_ZMK_TPSG
       if (0 < x) {
@@ -60,8 +66,7 @@ struct zmk_hid_mouse_report *zmk_tpsg_trans(int32_t x, int32_t y) {
           mouse_report->body.y = -1 *
 	    (int16_t)(((y * y) >> CONFIG_ZMK_TPSG_AYMC) + (y >> CONFIG_ZMK_TPSG_BYMC)); // Up
       }
-  } else
-    { // reduce strain gauge power
+  } else { // reduce strain gauge power
       if (0 < x) {
           mouse_report->body.x =
 	    (int16_t)(((x * x) >> CONFIG_ZMK_TPSG_AXPR) + (x >> CONFIG_ZMK_TPSG_BXPR)); // Right
@@ -87,9 +92,6 @@ struct zmk_hid_mouse_report *zmk_tpsg_trans(int32_t x, int32_t y) {
 }
 
 static int zmk_tpsg_update(const struct device *tpsg) {
-#if 0
-    static int count = 0;
-#endif    
     struct sensor_value state_of_charge;
 
     int rc = sensor_sample_fetch_chan(tpsg, SENSOR_CHAN_ACCEL_XYZ);
@@ -110,94 +112,9 @@ static int zmk_tpsg_update(const struct device *tpsg) {
     {
       int x = mouse_report->body.x, y = mouse_report->body.y;;
       int z = x * x + y * y;
-      //LOG_DBG("TPSG:%4d %4d",x, y);
-      
-#if 1
       if ( z != 0 ) zmk_endpoints_send_mouse_report();
-      return rc;
-#endif
-#if 0
-      if ( count++ < 128 ) {
-	if ( z != 0 ) {
-	  zmk_endpoints_send_mouse_report();
-	  count = 0;
-	}
-      } else {
-	if ( 25 < z ) {
-	  k_timer_start(tpsg_timer_p, K_MSEC(CONFIG_ZMK_TPSG_SCAN_TIME), K_MSEC(CONFIG_ZMK_TPSG_SCAN_TIME));
-	  count = 0;
-	} else {
-	  if ( count == 129 ) {
-	    k_timer_start(tpsg_timer_p, K_MSEC(500), K_MSEC(500));	    
-	  }
-	  count = 254;
-	}
-      }
-#endif
-#if 0
-      if (z == 0) {
-	if ( count++ > 128) {
-	  k_timer_start(tpsg_timer_p, K_MSEC(500), K_MSEC(500));
-	  count = 128;
-	}
-      } else {
-	if ( (count > 128) && (z > 1) ) {
-	  k_timer_start(tpsg_timer_p, K_MSEC(CONFIG_ZMK_TPSG_SCAN_TIME), K_MSEC(CONFIG_ZMK_TPSG_SCAN_TIME));
-	} else {
-	  zmk_endpoints_send_mouse_report();
-	}
-	count = 0;
-      }
-      return rc;	    
-#endif
-#if 0
-      if (z == 0) {
-	kanno();
-      	count++;
-      	if ( count > 128) k_timer_start(tpsg_timer_p, K_MSEC(500), K_MSEC(500));
-      } else {
-      	if (count > 128) {
-      	  if (z < 2) return rc;
-      	  k_timer_start(tpsg_timer_p, K_MSEC(CONFIG_ZMK_TPSG_SCAN_TIME), K_MSEC(CONFIG_ZMK_TPSG_SCAN_TIME));
-      	}
-      	zmk_endpoints_send_mouse_report();
-      	count = 0;
-      }
-      return rc;	    
-#endif
-    }      
-#if 0    
-       if (count++ < 128) {
-         if (mouse_report->body.x != 0 || mouse_report->body.y != 0) {
-	   zmk_endpoints_send_mouse_report();
-	   count = 0;
-	   k_timer_start(tpsg_timer_p, K_MSEC(CONFIG_ZMK_TPSG_SCAN_TIME), K_MSEC(CONFIG_ZMK_TPSG_SCAN_TIME));
-         }
-       } else {
-         if ((mouse_report->body.x * mouse_report->body.x) > 1 || (mouse_report->body.y * mouse_report->body.y) > 1) {
-	   zmk_endpoints_send_mouse_report();
-	   count = 0;
-	   k_timer_start(tpsg_timer_p, K_MSEC(CONFIG_ZMK_TPSG_SCAN_TIME), K_MSEC(CONFIG_ZMK_TPSG_SCAN_TIME));
-         } else {
-           k_timer_start(tpsg_timer_p, K_MSEC(500), K_MSEC(500));
-         }
-       }
-       //LOG_DBG("TPSG:%4d %4d",mouse_report->body.x, mouse_report->body.y);
-       return rc;
-#endif    
-    //    if ((count++ < 128) && (mouse_report->body.x != 0 || mouse_report->body.y != 0)) {
-    //      zmk_endpoints_send_mouse_report();
-    //      count = 0;
-    //      k_timer_start(tpsg_timer_p, K_MSEC(CONFIG_ZMK_TPSG_SCAN_TIME), K_MSEC(CONFIG_ZMK_TPSG_SCAN_TIME));
-    //      LOG_DBG("TPSG:fast");
-    //    } else {
-    //      if (count++ >  128) {
-    //        k_timer_start(tpsg_timer_p, K_MSEC(500), K_MSEC(500));
-    //	LOG_DBG("TPSG:slow");
-    //      }
-    //    }
-    //
-    //    return rc;
+    }
+    return rc;
 }
 
 static void zmk_tpsg_work(struct k_work *work) {
