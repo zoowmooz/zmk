@@ -47,67 +47,6 @@ struct tpsg_data {
     uint8_t state_of_charge;
 };
 
-#define TPSG_VAR_BUF_SFT 6 /* buffer length 6,5,4,,, */
-#define TPSG_VAR_BUF_LEN (0x01 << TPSG_VAR_BUF_SFT)
-#define TPSG_VAR_BUF_MSK (TPSG_VAR_BUF_LEN - 1)
-
-#define TPSG_VARIANCE(raw_new, debug_x, debug_y) ({			\
-      static uint16_t raw_array[TPSG_VAR_BUF_LEN] = {0};		\
-      static uint16_t point = 0;					\
-      static uint32_t raw_sum = 0, sqr_sum = 0;				\
-      static int32_t long_average = 0;					\
-      int16_t raw_old = raw_array[(point & TPSG_VAR_BUF_MSK)];		\
-      int32_t moving_average, variance;					\
-      if (raw_new == 0) {						\
-	long_average = 0;						\
-	return 0;							\
-      }									\
-      raw_sum -= raw_old;						\
-      raw_sum += raw_new;						\
-      sqr_sum -= (raw_old * raw_old);					\
-      sqr_sum += (raw_new * raw_new);					\
-      raw_array[(point++ & TPSG_VAR_BUF_MSK)] = raw_new;		\
-      moving_average = (raw_sum >> TPSG_VAR_BUF_SFT);			\
-      variance = abs((sqr_sum - raw_sum * moving_average) >> TPSG_VAR_BUF_SFT);	\
-      if ((long_average == 0) && (variance < CONFIG_ZMK_TPSG_VARIANCE)	)			\
-	{								\
-	  if (debug_x)							\
-	    LOG_DBG("TPSG x                                       %8d %8d %8d %10d", raw_new, moving_average, long_average, variance); \
-	  if (debug_y)							\
-	    LOG_DBG("TPSG y                                           %8d %8d %8d %10d", raw_new, moving_average, long_average, variance); \
-	  long_average = moving_average;				\
-	}								\
-      if ( long_average != 0)						\
-	return raw_new - long_average;					\
-      else								\
-	return 16384;							\
-    })
-
-      /* if ((variance < CONFIG_ZMK_TPSG_VARIANCE)	&&			 */
-      /* 	  ((long_average == 0) ||					 */
-      /* 	   ((long_average != 0) &&					 */
-      /* 	    ((abs(long_average - moving_average) < (long_average /10))))))  */
-      /* 	{								 */
-      /* 	  if (debug_x)							 */
-      /* 	    LOG_DBG("TPSG x                                       %8d %8d %8d %10d", raw_new, moving_average, long_average, variance);  */
-      /* 	  if (debug_y)							 */
-      /* 	    LOG_DBG("TPSG y                                           %8d %8d %8d %10d", raw_new, moving_average, long_average, variance);  */
-      /* 	  long_average = moving_average;				 */
-      /* 	}								 */
-
-
-
-//	  && (long_average != 0) && (abs(long_average - moving_average) < (long_average /200)))
-//	  &&								
-//	  ((long_average == 0) ||				
-//	   ((long_average != 0) &&				
-//	    ((abs(long_average - moving_average) < (long_average /200)) || 
-//	     (moving_average < long_average)))))			
-//
-// memo
-// wings42_tpsg 1498 1547
-
-
 static int tpsg_init(const struct device *dev);
   
 static int tpsg_sample_fetch(const struct device *dev, enum sensor_channel chan);
