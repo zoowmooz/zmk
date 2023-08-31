@@ -114,7 +114,7 @@
 	 		key-positions = <48 49>;
 	 		bindings = <&mo 4>;
 	 	};
-	 	// combo_lbtl {
+	 	// combo_map2 {
 	 	// 	timeout-ms = <100>;
 	 	// 	key-positions = <42 43 44>;
 	 	// 	bindings = <&bootloader>;
@@ -129,10 +129,10 @@
 		compatible = "zmk,keymap";
 		default_layer { /* Default */	/* 0 */
 //	---------------------------------------------------------------------------------------------------------	---------------------------------------------------------------------------------------------------------
-//	|	TAB	|	Q	|	W	|	E	|	R	|	T	|	|	|	|	Y	|	U	|	I	|	O	|	P |	[	|
-//	|   CTRL+ESC	|	A	|	S	|	D	|	F	|	G	|	|	|	|	H	|	J	|	K	|	L	|	;	|	'	|
-//	|   SHFT+ESC	|	Z	|	X	|	C	|	V	|	B	|	|	|   B	|	N	|	M	|	,	|	.	|	/	|  SHIFT+Enter	|
-//	------------------------------------------------|       GUI	|       ALT	|	MB1	|-------	--------|   RET lower	|  SPACE raise	|    ESC super	|------------------------------------------------
+//	|	TAB	|	Q	|	W	|	E	|	R	|	T	|	|	|	|	Y	|	U	|	I	|	O	|	P	|	ENTER	|
+//	|	CTRL	|	A+CTRL	|	S	|	D	|	F	|	G	|	|	|	|	H	|	J	|	K	|	L	|	;	|	CTRL	|
+//	|	SHIFT	|	Z+SHFT	|	X	|	C	|	V	|	B	|	|	|   B	|	N	|	M	|	,	|	.	|	/	|	SHIFT	|
+//	------------------------------------------------|       GUI	|       ALT	|	MB1	|-------	--------| SPACE+navi	|	number	|	symbol	|------------------------------------------------
 //							-------------------------------------------------			-------------------------------------------------
 			bindings = <
 	&kp ESC		&kp Q		&kp W		&kp E		&kp R	 	&kp T		&none		&kp B	&kp Y		&kp U		&kp I		&kp O		&kp P		&kp RET
@@ -141,43 +141,61 @@
 	&kp LSHFT	&hm LSHFT Z	&kp X		&kp C		&kp V		&kp B		&none		&none	&kp N		&kp M		&kp COMMA	&kp DOT		&hm RSHFT FSLH	&kp RSHFT
 //	&kp LSHFT	&kp Z		&kp X		&kp C		&kp V		&kp B		&none		&none	&kp N		&kp M		&kp COMMA	&kp DOT		&kp FSLH	&kp RSHFT	
 							&mt LGUI ESC	&kp LALT	&mkp MB1	&none		&none	&lt 3 SPACE	&mo 1		&mo 2
-//							&mt LGUI ESC	&kp LALT	&kp LCTRL	o&none		&none	&lt 3 SPACE	&mo 1		&mo 2
+//							&mt LGUI ESC	&kp LALT	&kp LCTRL	&none		&none	&lt 3 SPACE	&mo 1		&mo 2
 		>;
 // Disable encoder 20220804 for measurement power consumption
 //			sensor-bindings = <&inc_dec_kp UP DOWN>;
 		};
 		num_layer { /* number */	/* L1 */
+//	---------------------------------------------------------------------------------------------------------	---------------------------------------------------------------------------------------------------------
+//	|	TAB	|	1!	|	2@	|	3#	|	4$	|	5%	|	|	|	|	6^	|	7&	|	8*	|	9(	|	0)	|	ENTER	|
+//	|	CTRL	|	`~	|	\|	|	DEL	|	[{	|	]}	|	|	|	|	BACKSP	|	RETUN	|	-_	|	=+	|	'"	|	CTRL	|
+//	|	SHIFT	|	F1	|	F2	|	F3	|	F4	|	F5	|	|	|	|	F6	|	F7	|	F8	|	F9	|	F10	|	SHIFT	|
+//	------------------------------------------------|       GUI	|       ALT	|	MB1	|-------	--------| SPACE+navi	|	number	|	symbol	|------------------------------------------------
+//							-------------------------------------------------			-------------------------------------------------
 			bindings = <
 	&trans		&kp N1		&kp N2		&kp N3		&kp N4		&kp N5		&none		&none	&kp N6		&kp N7		&kp N8		&kp N9		&kp N0		&trans
 //	&trans		&hm LCTRL GRAVE	&kp BSLH	&kp DEL		&kp LBKT	&kp RBKT	&none		&none	&kp BSPC	&kp RET		&hm RALT MINUS	&hm RGUI EQUAL	&hm LCTRL SQT	&trans
-//	&trans		&hm LCTRL GRAVE	&kp BSLH	&kp DEL		&kp LBKT	&kp RBKT	&none		&none	&kp BSPC	&kp RET		&kp MINUS	&kp EQUAL	&hm RCTRL SQT	&trans
-	&trans		&kp GRAVE	&kp BSLH	&kp DEL		&kp LBKT	&kp RBKT	&none		&none	&kp BSPC	&kp RET		&kp MINUS	&kp EQUAL	&kp SQT		&trans
+	&trans		&hm LCTRL GRAVE	&kp BSLH	&kp DEL		&kp LBKT	&kp RBKT	&none		&none	&kp BSPC	&kp RET		&kp MINUS	&kp EQUAL	&hm RCTRL SQT	&trans
 //	&trans		&kp GRAVE	&kp BSLH	&kp DEL		&kp LBKT	&kp RBKT	&none		&none	&kp BSPC	&kp RET		&kp MINUS	&kp EQUAL	&kp SQT		&trans
-//	&trans		&hm LSHFT F1	&kp F2		&kp F3		&kp F4		&kp F5		&none		&none	&kp F6		&kp F7		&kp F8		&kp F9		&hm RSHFT F10	&trans
-	&trans		&kp LSHFT	&kp F2		&kp F3		&kp F4		&kp F5		&none		&none	&kp F6		&kp F7		&kp F8		&kp F9		&kp RSHFT	&trans	
+//	&trans		&kp GRAVE	&kp BSLH	&kp DEL		&kp LBKT	&kp RBKT	&none		&none	&kp BSPC	&kp RET		&kp MINUS	&kp EQUAL	&kp SQT		&trans
+	&trans		&hm LSHFT F1	&kp F2		&kp F3		&kp F4		&kp F5		&none		&none	&kp F6		&kp F7		&kp F8		&kp F9		&hm RSHFT F10	&trans
+//	&trans		&kp LSHFT	&kp F2		&kp F3		&kp F4		&kp F5		&none		&none	&kp F6		&kp F7		&kp F8		&kp F9		&kp RSHFT	&trans	
 							&trans		&trans		&trans		&none		&none	&trans		&trans		&trans
 		>;
 //			sensor-bindings = <&inc_dec_kp PAGE_UP PAGE_DOWN>;
 		};
 
 		sym_layer { /* Symbol */	/* L2 */
+//	---------------------------------------------------------------------------------------------------------	---------------------------------------------------------------------------------------------------------
+//	|	TAB	|	!	|	@	|	#	|	$	|	%	|	|	|	|	^	|	&	|	*	|	(	|	)	|	ENTER	|
+//	|	CTRL	|	~+CTRL	|	|	|	DEL	|	[{	|	]}	|	|	|	|	BACKSP	|	RETUN	|	_	|	+	|	"+CTRL	|	CTRL	|
+//	|	SHIFT	|	SHIFT	|		|		|	{	|	}	|	|	|	|		|		|		|		|	SHIFT	|	SHIFT	|
+//	------------------------------------------------|       GUI	|       ALT	|	MB1	|-------	--------| SPACE+navi	|	number	|	symbol	|------------------------------------------------
+//							-------------------------------------------------			-------------------------------------------------
 			bindings = <
 	&trans		&kp EXCL	&kp AT		&kp HASH	&kp DLLR	&kp PRCNT	&none		&none	&kp CARET	&kp AMPS	&kp STAR	&kp LPAR	&kp RPAR	&trans
-//	&trans		&hm LCTRL TILDE	&kp PIPE	&kp DEL		&kp LBKT	&kp RBKT	&none		&none	&kp BSPC	&kp RET		&kp UNDER	&kp PLUS	&hm RCTRL DQT	&trans
-	&trans		&kp TILDE	&kp PIPE	&kp DEL		&kp LBKT	&kp RBKT	&none		&none	&kp BSPC	&kp RET		&kp UNDER	&kp PLUS	&kp DQT		&trans
+	&trans		&hm LCTRL TILDE	&kp PIPE	&kp DEL		&kp LBKT	&kp RBKT	&none		&none	&kp BSPC	&kp RET		&kp UNDER	&kp PLUS	&hm RCTRL DQT	&trans
 //	&trans		&kp TILDE	&kp PIPE	&kp DEL		&kp LBKT	&kp RBKT	&none		&none	&kp BSPC	&kp RET		&kp UNDER	&kp PLUS	&kp DQT		&trans
 	&trans		&kp LSHFT	&none		&none		&kp LBRC	&kp RBRC	&none		&none	&none		&none		&none		&none		&kp RSHFT	&trans
+//	&trans		&kp LSHFT	&none		&none		&kp LBRC	&kp RBRC	&none		&none	&none		&none		&none		&none		&kp RSHFT	&trans
 							&trans		&trans		&trans		&none		&none	&trans		&trans		&trans
 		>;
 //			sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
 		};
 		nav_layer { /* Navigation */	/* L3 */
+//	---------------------------------------------------------------------------------------------------------	---------------------------------------------------------------------------------------------------------
+//	|	TAB	|		|		|	END	|		|	PGUP	|	|	|	|		|	PGUP	|	TAB	| SCROLL_UP	|	UP	|	ENTER	|
+//	|	CTRL	| HOME+CTRL	| PRINT_SCREEN	|	DEL	|	RIGHT	|	PGDN	|	|	|	|	BACKSP	|	RETUN	| SCROLL_LEFT	| SCROLL_DOWN	| SCROLL_RIGHT	|	CTRL	|
+//	|	SHIFT	|		|	MB3	|	MB2	|	MB1	|	LEFT	|	|	| LEFT	|	DOWN	|	PGDN	|	MB3	|	MB2	|	MB1	|	SHIFT	|
+//	------------------------------------------------|       GUI	|       ALT	|	MB1	|-------	--------| SPACE+navi	|	number	|	symbol	|------------------------------------------------
+//							-------------------------------------------------			-------------------------------------------------
 			bindings = <
-	&trans		&none		&none		&kp END		&mkp MB3	&kp PGUP	&none		&kp LEFT &none		&kp PGUP	&kp  TAB	 &mwh SCROLL_UP	  &kp  UP	    &trans
+	&trans		&none		&none		&kp END		&none		&kp PGUP	&none		&kp LEFT &none		&kp PGUP	&kp  TAB	 &mwh SCROLL_UP	  &kp  UP	    &trans
 //	&trans		&none		&none		&kp END		&mkp MB3	&kp PGUP	&none		&kp LEFT &none		&kp PGUP	&kp  TAB	 &kp PGUP	  &kp  UP	    &trans
-	&trans		&kp HOME 	&kp PSCRN  	&kp DEL		&kp RIGHT	&kp PGDN	&none		&none	 &kp BSPC	&kp RET		&mwh SCROLL_LEFT &mwh SCROLL_DOWN &mwh SCROLL_RIGHT &trans
+	&trans		&hm LCTRL HOME 	&kp PSCRN  	&kp DEL		&kp RIGHT	&kp PGDN	&none		&none	 &kp BSPC	&kp RET		&mwh SCROLL_LEFT &mwh SCROLL_DOWN &mwh SCROLL_RIGHT &trans
 //	&trans		&kp HOME 	&kp PSCRN  	&kp DEL		&kp RIGHT	&kp PGDN	&none		&none	 &kp BSPC	&kp RET		&none		 &kp PGDN	  &none		    &trans
-	&trans		&kp LSHFT	&mkp MB3	&mkp MB2	&mkp MB1	&kp LEFT	&none		&none	 &kp DOWN	&kp PGDN	&mkp MB3	 &mkp MB2	  &mkp MB1	    &none
+	&trans		&kp LSHFT	&mkp MB3	&mkp MB2	&mkp MB1	&kp LEFT	&none		&none	 &kp DOWN	&kp PGDN	&mkp MB3	 &mkp MB2	  &mkp MB1	    &trans
 						 	&trans		&trans		&trans		&none		&none	 &trans		&trans		&trans
 		>;
 //			sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
@@ -208,21 +226,6 @@
 		>;
 //			sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
 		};
-//		num_layer { /* Num */
-//	---------------------------------------------------------------------------------------------------------	---------------------------------------------------------------------------------------------------------
-//	|		|		|		|		|		|		|	|	|	|      TAB	|	7	|	8	|	9	|   BACK_SPACE	|		|
-//	|		|		|		|		|		|		|	|	|	|	/	|	4	|	5	|	6	|	-	|		|
-//	|		|		|		|		|		|		|	|	|	|	*	|	1	|	2	|	3	|	+	|		|
-//	------------------------------------------------| DEFAULT LAYER	| DEFAULT LAYER	|		|--------	--------|     RETURN	|	0	|	.	|------------------------------------------------
-//							-------------------------------------------------			-------------------------------------------------
-//	 		bindings = <
-//	 &none		&none		&none		&none		&kp C_BRI_UP	&kp C_VOL_UP	&none		&none	&kp TAB		&kp N7		&kp N8		&kp N9		&kp BSPC	&none	
-//	 &trans		&trans		&none		&none		&trans		&kp C_MUTE	&none		&none	&kp SLASH	&kp N4		&kp N5		&kp N6		&kp MINUS	&none	
-//	 &trans		&trans		&none		&none		&kp C_BRI_DN	&kp C_VOL_DN	&none		&none	&kp ASTERISK	&kp N1		&kp N2		&kp N3		&kp PLUS	&trans	
-//	 					 	&to 0		&to 0		&trans		&none		&none	&kp RET		&kp N0		&kp DOT
-//		>;
-//			sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
-//	 	};
 	};
 };
  
