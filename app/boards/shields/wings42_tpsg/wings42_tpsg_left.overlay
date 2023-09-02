@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) 2022 KyouTansan
+ * SPDX-License-Identifier: MIT
+ */
+#include "wings42_tpsg.dtsi"
+&default_transform {	col-offset = <0>;};
+&kscan0 {
+	matrix2: matrix2 {	kscan = <&kscan2>;	column-offset = <6>;	row-offset = <0>;};
+	matrix3: matrix3 {	kscan = <&kscan3>;	column-offset = <6>;	row-offset = <1>;};
+};
+&kscan1 {
+	col-gpios
+		= <&pro_micro   14 GPIO_ACTIVE_HIGH>
+		, <&pro_micro   15 GPIO_ACTIVE_HIGH>
+		, <&pro_micro   18 GPIO_ACTIVE_HIGH>
+		, <&pro_micro   19 GPIO_ACTIVE_HIGH>
+		, <&pro_micro   20 GPIO_ACTIVE_HIGH>
+		, <&pro_micro   21 GPIO_ACTIVE_HIGH>
+		;
+};
+
+&kscan2 {
+	diode-direction = "col2row";
+	row-gpios = <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+	col-gpios = <&pro_micro 9 (GPIO_ACTIVE_HIGH)>;
+	status = "okay";
+};
+&kscan3 {
+	diode-direction = "col2row";
+	row-gpios = <&pro_micro 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+	col-gpios = <&pro_micro 16 (GPIO_ACTIVE_HIGH)>;
+	status = "okay";
+};
+
+//&direct_scan {
+//	debounce-period = <50>;
+//	input-gpios = <&pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+//	status = "okay";
+//};
+

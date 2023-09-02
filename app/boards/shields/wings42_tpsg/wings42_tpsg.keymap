@@ -1,0 +1,112 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/mouse.h>
+#include <dt-bindings/zmk/outputs.h>
+
+/ {
+	behaviors {
+		hm: balanced_homerow_mods {
+			compatible = "zmk,behavior-hold-tap";
+			label = "HOMEROW_MODS";
+			#binding-cells = <2>;
+			tapping-term-ms = <1000>;    // <---[[moderate duration]]
+			//quick-tap-ms = <125>;
+			flavor = "balanced";
+			bindings = <&kp>, <&kp>;
+		};
+	};
+	combos {
+		compatible = "zmk,combos";
+	 	combo_l5 {
+	 		timeout-ms = <100>;
+	 		key-positions = <48 49>;
+	 		bindings = <&mo 4>;
+	 	};
+	 	combo_rbtl {
+	 		timeout-ms = <100>;
+	 		key-positions = <47 48 49>;
+	 		bindings = <&bootloader>;
+	 	};
+	};
+	keymap {
+		compatible = "zmk,keymap";
+		default_layer { /* Default */	/* 0 */
+//	---------------------------------------------------------------------------------------------------------	---------------------------------------------------------------------------------------------------------
+//	|	TAB	|	Q	|	W	|	E	|	R	|	T	|	|	|	|	Y	|	U	|	I	|	O	|	P	|	ENTER	|
+//	|	CTRL	|	A+CTRL	|	S	|	D	|	F	|	G	|	|	|	|	H	|	J	|	K	|	L	|	;	|	CTRL	|
+//	|	SHIFT	|	Z+SHFT	|	X	|	C	|	V	|	B	|	|	|   B	|	N	|	M	|	,	|	.	|	/	|	SHIFT	|
+//	------------------------------------------------|       GUI	|       ALT	|	MB1	|-------	--------| SPACE+navi	|	number	|	symbol	|------------------------------------------------
+//							-------------------------------------------------			-------------------------------------------------
+			bindings = <
+	&kp ESC		&kp Q		&kp W		&kp E		&kp R	 	&kp T		&none		&kp B	&kp Y		&kp U		&kp I		&kp O		&kp P		&kp RET
+	&kp LCTRL	&hm LCTRL A	&kp S		&kp D		&kp F		&kp G		&none		&none	&kp H		&kp J		&kp K		&kp L		&hm RCTRL SEMI	&kp RCTRL
+	&kp LSHFT	&hm LSHFT Z	&kp X		&kp C		&kp V		&kp B		&none		&none	&kp N		&kp M		&kp COMMA	&kp DOT		&hm RSHFT FSLH	&kp RSHFT
+							&mt LGUI ESC	&kp LALT	&mkp MB1	&none		&none	&lt 3 SPACE	&mo 1		&mo 2
+		>;
+		};
+		num_layer { /* number */	/* L1 */
+//	---------------------------------------------------------------------------------------------------------	---------------------------------------------------------------------------------------------------------
+//	|	TAB	|	1!	|	2@	|	3#	|	4$	|	5%	|	|	|	|	6^	|	7&	|	8*	|	9(	|	0)	|	ENTER	|
+//	|	CTRL	|	`~	|	\|	|	DEL	|	[{	|	]}	|	|	|	|	BACKSP	|	RETUN	|	-_	|	=+	|	'"	|	CTRL	|
+//	|	SHIFT	|	F1	|	F2	|	F3	|	F4	|	F5	|	|	|	|	F6	|	F7	|	F8	|	F9	|	F10	|	SHIFT	|
+//	------------------------------------------------|       GUI	|       ALT	|	MB1	|-------	--------| SPACE+navi	|	number	|	symbol	|------------------------------------------------
+//							-------------------------------------------------			-------------------------------------------------
+			bindings = <
+	&trans		&kp N1		&kp N2		&kp N3		&kp N4		&kp N5		&none		&none	&kp N6		&kp N7		&kp N8		&kp N9		&kp N0		&trans
+	&trans		&hm LCTRL GRAVE	&kp BSLH	&kp DEL		&kp LBKT	&kp RBKT	&none		&none	&kp BSPC	&kp RET		&kp MINUS	&kp EQUAL	&hm RCTRL SQT	&trans
+	&trans		&hm LSHFT F1	&kp F2		&kp F3		&kp F4		&kp F5		&none		&none	&kp F6		&kp F7		&kp F8		&kp F9		&hm RSHFT F10	&trans
+							&trans		&trans		&trans		&none		&none	&trans		&trans		&trans
+		>;
+		};
+		sym_layer { /* Symbol */	/* L2 */
+//	---------------------------------------------------------------------------------------------------------	---------------------------------------------------------------------------------------------------------
+//	|	TAB	|	!	|	@	|	#	|	$	|	%	|	|	|	|	^	|	&	|	*	|	(	|	)	|	ENTER	|
+//	|	CTRL	|	~+CTRL	|	|	|	DEL	|	[{	|	]}	|	|	|	|	BACKSP	|	RETUN	|	_	|	+	|	"+CTRL	|	CTRL	|
+//	|	SHIFT	|	SHIFT	|		|		|	{	|	}	|	|	|	|		|		|		|		|	SHIFT	|	SHIFT	|
+//	------------------------------------------------|       GUI	|       ALT	|	MB1	|-------	--------| SPACE+navi	|	number	|	symbol	|------------------------------------------------
+//							-------------------------------------------------			-------------------------------------------------
+			bindings = <
+	&trans		&kp EXCL	&kp AT		&kp HASH	&kp DLLR	&kp PRCNT	&none		&none	&kp CARET	&kp AMPS	&kp STAR	&kp LPAR	&kp RPAR	&trans
+	&trans		&hm LCTRL TILDE	&kp PIPE	&kp DEL		&kp LBKT	&kp RBKT	&none		&none	&kp BSPC	&kp RET		&kp UNDER	&kp PLUS	&hm RCTRL DQT	&trans
+	&trans		&kp LSHFT	&none		&none		&kp LBRC	&kp RBRC	&none		&none	&none		&none		&none		&none		&kp RSHFT	&trans
+							&trans		&trans		&trans		&none		&none	&trans		&trans		&trans
+		>;
+		};
+		nav_layer { /* Navigation */	/* L3 */
+//	---------------------------------------------------------------------------------------------------------	---------------------------------------------------------------------------------------------------------
+//	|	TAB	|		|		|	END	|		|	PGUP	|	|	|	|		|	PGUP	|	TAB	| SCROLL_UP	|	UP	|	ENTER	|
+//	|	CTRL	| HOME+CTRL	| PRINT_SCREEN	|	DEL	|	RIGHT	|	PGDN	|	|	|	|	BACKSP	|	RETUN	| SCROLL_LEFT	| SCROLL_DOWN	| SCROLL_RIGHT	|	CTRL	|
+//	|	SHIFT	|		|	MB3	|	MB2	|	MB1	|	LEFT	|	|	| LEFT	|	DOWN	|	PGDN	|	MB3	|	MB2	|	MB1	|	SHIFT	|
+//	------------------------------------------------|       GUI	|       ALT	|	MB1	|-------	--------| SPACE+navi	|	number	|	symbol	|------------------------------------------------
+//							-------------------------------------------------			-------------------------------------------------
+			bindings = <
+	&trans		&none		&none		&kp END		&none		&kp PGUP	&none		&kp LEFT &none		&kp PGUP	&kp  TAB	 &mwh SCROLL_UP	  &kp  UP	    &trans
+	&trans		&hm LCTRL HOME 	&kp PSCRN  	&kp DEL		&kp RIGHT	&kp PGDN	&none		&none	 &kp BSPC	&kp RET		&mwh SCROLL_LEFT &mwh SCROLL_DOWN &mwh SCROLL_RIGHT &trans
+	&trans		&kp LSHFT	&mkp MB3	&mkp MB2	&mkp MB1	&kp LEFT	&none		&none	 &kp DOWN	&kp PGDN	&mkp MB3	 &mkp MB2	  &mkp MB1	    &trans
+						 	&trans		&trans		&trans		&none		&none	 &trans		&trans		&trans
+		>;
+		};
+		cnt_layer { /* Control */	/* L4 */
+//	---------------------------------------------------------------------------------------------------------	---------------------------------------------------------------------------------------------------------
+//	|		|		|		|		|   Brite Up	|  Volume Up	|	|	|	|		|		|		| 		| BLE clear	|		|
+//	|		| 		| 		|		|		|  Mute		|	|	|	| BLE selelct 2	| BLE select 3	| BLE select 4	| BLE select 5	|		|		|
+//	|		|		|		|		|   Brite Down	|  Volume Down	|	|	| 	|		|		|		| 		| togle USB/BLE	|		|
+//	------------------------------------------------|       	|       	|		|-------	--------| 		|		|		|------------------------------------------------
+//							-------------------------------------------------			-------------------------------------------------
+			bindings = <
+	&none		&none		&none		&none		&kp C_BRI_UP	&kp C_VOL_UP	&none		&none	&none		&none		&none		&none		&bt BT_CLR	&none
+	&none		&none		&none		&none		&none		&kp C_MUTE	&none		&none	&bt BT_SEL 2	&bt BT_SEL 3	&bt BT_SEL 4	&bt BT_SEL 5	&none		&none	
+	&none		&none		&none		&none		&kp C_BRI_DN	&kp C_VOL_DN	&none		&none	&none		&none		&none		&none		&out OUT_TOG	&none	
+						 	&trans		&trans		&trans		&none		&none	&trans		&trans		&trans
+		>;
+		};
+	};
+};
+ 
