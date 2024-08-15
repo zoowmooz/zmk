@@ -59,12 +59,12 @@ static struct tpsg_data tpsg_data;
 static const struct tpsg_config tpsg_cfg = {
     .io_channel_x =
         {
-            DT_INST_IO_CHANNELS_LABEL(0),
+            DT_INST_IO_CHANNELS_LABEL_BY_IDX(0, 0),
             DT_INST_IO_CHANNELS_INPUT_BY_IDX(0, 0),
         },
     .io_channel_y =
         {
-            DT_INST_IO_CHANNELS_LABEL(0),
+            DT_INST_IO_CHANNELS_LABEL_BY_IDX(0, 1),
             DT_INST_IO_CHANNELS_INPUT_BY_IDX(0, 1),
         },
 #if DT_INST_NODE_HAS_PROP(0, power_gpios)
