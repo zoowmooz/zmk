@@ -26,7 +26,7 @@ struct k_timer *tpsg_timer_p;
 
 struct zmk_hid_mouse_report *zmk_tpsg_trans(int32_t x, int32_t y) {
   struct zmk_hid_mouse_report *mouse_report = zmk_hid_get_mouse_report();
-  if (x == 16384||y == 16384) {
+  if ((x == 16384)||(y == -16384)) {
     static int loop = 0;
     switch((loop++>>3)&3){
     case 0:
