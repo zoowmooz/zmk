@@ -1,8 +1,8 @@
-# Copyright (c) 2020 The ZMK Contributors
+# Copyright (c) 2024 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
 config ZMK_TPSG
-	bool "ZMK track point strain gauge"
+	bool "ZMK pointing-device with the TrackPoint's strain gauge"
 	select ADC
 	help
 	  Enable ZMK track point driver with strain gauge.
@@ -35,11 +35,27 @@ config ZMK_TPSG_POWER_CHARGE_UP_TIME
        help
          Init charge up time for strain gauge and ope-amp.
 
-#config ZMK_TPSG_WHEASTONE_BRIDGE_TUNING
-#       bool "The zmk trackpoint strain gauge tuning."
-#       help
-#	 Set value as target.
+config ZMK_TPSG_WHEASTONE_BRIDGE_TUNING
+       bool "The zmk trackpoint strain gauge tuning."
+       help
+   Move strain gauge to max and min. Then set registers as target.
 
+### GAIN setting!!!
+
+
+config ZMK_TPSG_X_VARIANCE_MONITOR
+       bool "Monitor X variance"
+       default false
+       select ZMK_USB_LOGGING
+       help
+          Set ZMK_TPSG_VARIANCE over than this X and Y value.
+
+config ZMK_TPSG_Y_VARIANCE_MONITOR
+       bool "Monitor Y variance"
+       default false
+       select ZMK_USB_LOGGING
+       help
+          Set ZMK_TPSG_VARIANCE over than this X and Y value.
 
 config ZMK_TPSG_ATTEN_X_SQUARE_PLUS_CP
        int "X-squared attenuation due to Wheatstone bridge for plus/right area while constant power consumption mode"
