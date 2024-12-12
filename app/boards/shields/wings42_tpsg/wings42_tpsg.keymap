@@ -47,12 +47,12 @@
 // | ESC |  Q  |  W  |  E  |  R  |  T  |     | |  B  |	Y  |  U  |  I  |  O  |	P  |  [  |
 // | CTRL|  A  |  S  |  D  |  F  |  G  |     | |     |	H  |  J  |  K  |  L  |	;  |  '  |
 // |SHIFT|Z+SFT|  X  |  C  |  V  |  B  |     | |     |	N  |  M  |  ,  |  .  |/+SFT|SHIFT|
-//                   | GUI | ALT | CTRL|     | |     |SPnav| num | sym |
+//                   | GUI | ALT | MB1 |     | |     |SPnav| num | sym |
 			bindings = <
 	&kp ESC		&kp Q		&kp W	&kp E			&kp R	 	&kp T		&none	&kp B	&kp Y		&kp U	&kp I		&kp O	&kp P			&kp LBKT
 	&kp LCTRL	&kp A		&kp S	&kp D			&kp F		&kp G		&none	&none	&kp H		&kp J	&kp K		&kp L	&hm RCTRL SEMI	&kp SQT
 	&kp LSHFT	&hm LSHFT Z	&kp X	&kp C			&kp V		&kp B		&none	&none	&kp N		&kp M	&kp COMMA	&kp DOT	&hm RSHFT FSLH	&kp RSHFT
-									&mt LGUI ESC	&kp LALT	&kp LCTRL	&none	&none	&lt 3 SPACE	&mo 1	&mo 2
+									&mt LGUI ESC	&kp LALT	&mkp MB1	&none	&none	&lt 3 SPACE	&mo 1	&mo 2
 			>;
 		};
 		num_layer { /* number */	/* L1 */
@@ -60,7 +60,7 @@
 // |  `  |  1  |  2  |  3  |  4  |  5  |     | | LEFT|   6 |  7  |	8  |  9  |  0  |  -  |
 // | CTRL| F11 | F12 | DEL |RIGHT|     |     | |     | BKSP| RET |  *  |  =  |  /  |  +  |
 // | SHFT|F1SFT| F2  | F3  | F4  | F5  |     | |     |  F6 | F7  |	F8 | F9	 | F10 | SFT |
-//				     | GUI | ALT | CTRL|     | |     |SPnav| num | sym|
+//				     | GUI | ALT | MB1 |     | |     |SPnav| num | sym|
 			bindings = <
 	&kp GRAVE	&kp N1			&kp N2	&kp N3	&kp N4		&kp N5	&none	&kp LEFT	&kp N6		&kp N7	&kp N8		&kp N9		&kp N0			&kp MINUS
 	&trans		&kp F11			&kp F12	&kp DEL	&kp RIGHT	&none	&none	&none		&kp BSPC	&kp RET	&kp STAR	&kp EQUAL	&hm RCTRL FSLH	&kp PLUS
@@ -73,11 +73,11 @@
 // |  ~  |  !  |  @  |  #  |  $  |  %  |     | | LEFT|  ^  |  &  |  *  |  (  |  )  |  _  |
 // | CTRL|  `  |  \  | DEL |RIGHT|     |     | |     | BKSP| RET |  '  |  [  |  ]  |  \  |
 // | SHFT|  ~  | "|" |  +  |  -  | LEFT|     | |     |  =  | RET |  "  |  {  |  }  | "|" |
-//		             | GUI | ALT | CTRL|     | |     |SPnav| num | sym |
+//		             | GUI | ALT | MB1 |     | |     |SPnav| num | sym |
 			bindings = <
-	&kp TILDE	&kp EXCL	&kp AT		&kp HASH	&kp DLLR	&kp PRCNT	&none	&kp LEFT	&kp CARET	&kp AMPS	&kp STAR	&kp LPAR	&kp RPAR		&kp UNDER
-	&trans		&kp GRAVE	&kp BSLH	&kp DEL		&kp RIGHT	&none		&none	&none		&kp BSPC	&kp RET		&kp SQT		&kp LBKT	&hm RCTRL RBKT	&kp BSLH
-	&trans		&kp TILDE	&kp PIPE	&kp PLUS	&kp MINUS	&kp LEFT	&none	&none		&kp EQUAL	&kp RET		&kp DQT		&kp LBRC	&hm RSHFT RBRC	&kp PIPE
+	&kp TILDE	&kp EXCL	&kp AT		&kp HASH	&kp DLLR	&kp PRCNT	&none	&kp LEFT	&kp CARET	&kp AMPS	&kp STAR	&kp LPAR		&kp RPAR		&kp UNDER
+	&trans		&kp GRAVE	&kp BSLH	&kp DEL		&kp RIGHT	&none		&none	&none		&kp BSPC	&kp RET		&kp SQT		&hm RCTRL LBKT	&hm RCTRL RBKT	&kp BSLH
+	&trans		&kp TILDE	&kp PIPE	&kp PLUS	&kp MINUS	&kp LEFT	&none	&none		&kp EQUAL	&kp RET		&kp DQT		&kp LBRC		&hm RSHFT RBRC	&kp PIPE
 										&trans		&trans		&trans		&none	&none		&trans		&trans		&trans
 			>;
 		};
@@ -86,7 +86,7 @@
 // | ESC | ESC | PGUP| END | MB1 | MB2 |     | | LEFT|PSCRN|     | TAB | SCUP|  UP | BKSP|
 // | CTRL| HOME| PGDN| DEL |RIGHT|     |     | |     | BKSP| RET | SCL | SCDN| SCR | MB1 |
 // | SHFT|     |     | INS |     | LEFT|     | |     | DOWN| RET |     |     | SHFT| MB2 |
-//                   | GUI | ALT | CTRL|     | |     |SPnav| num | sym |
+//                   | GUI | ALT | MB1 |     | |     |SPnav| num | sym |
 			bindings = <
 	&kp ESC	&kp ESC		&kp PGUP	&kp END	&mkp MB1	&mkp MB2	&none	&kp LEFT	&kp PSCRN	&none	&kp  TAB	 		&mwh SCROLL_UP		&kp  UP				&kp BSPC
 	&trans	&kp HOME	&kp PGDN	&kp DEL	&kp RIGHT	&none		&none	&none		&kp BSPC	&kp RET	&mwh SCROLL_LEFT	&mwh SCROLL_DOWN	&mwh SCROLL_RIGHT	&mkp MB1
@@ -98,13 +98,13 @@
 // ------------------------------------------- -------------------------------------------
 // |     |     |     |     |BriUp|VolUp|     | |     |     |     |     |     |BTCLR|     |
 // |     |     |     |     |     | mute|     | |     | BT1 | BT2 | BT3 | BT4 | BT5 |     |
-// |BootL|     |     |     |BriDn|VolDn|     | |     |     |     |     |     |TGLUB|BootL|
-//                   | GUI | ALT | CTRL|     | |     |SPnav| num | sym |
+// |BootL|     |     |     |BriDn|VolDn|     | |     |     |     |     |     |TOGLE|BootL|
+//                   |     |     |     |     | |     |     |     |     |
 			bindings = <
 	&none		&none	&none	&none	&kp C_BRI_UP	&kp C_VOL_UP	&none	&none	&none			&none			&none			&none			&bt BT_CLR		&none
 	&none		&none	&none	&none	&none			&kp C_MUTE		&none	&none	&bt BT_SEL 1	&bt BT_SEL 2	&bt BT_SEL 3	&bt BT_SEL 4	&bt BT_SEL 5	&none	
 	&bootloader	&none	&none	&none	&kp C_BRI_DN	&kp C_VOL_DN	&none	&none	&none			&none			&none			&none			&out OUT_TOG	&bootloader
-								&trans	&trans			&trans			&none	&none	&trans			&trans			&trans
+								&none	&none			&none			&none	&none	&none			&none			&none	
 			>;
 		};
 	};
