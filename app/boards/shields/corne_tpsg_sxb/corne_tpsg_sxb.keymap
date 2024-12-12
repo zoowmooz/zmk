@@ -47,24 +47,24 @@
 	keymap {
 		compatible = "zmk,keymap";
 		default_layer { /* Default */	/* 0 */
-// -----------------------------------------------------------------------------------------
-// |  ESC |  Q  |  W  |  E  |  R  |  T  |   |  Y  |  U   |  I  |  O  |  P  |  [   |
-// | CTRL |  A  |  S  |  D  |  F  |  G  |   |  H  |  J   |  K  |  L  |  ;  |  '   |
-// | SHFT |  Z  |  X  |  C  |  V  |  B  |   |  N  |  M   |  ,  |  .  |  /  | SHFT |
-//              |     | GUI | ALT | CTRL|   | SPC | LY1  | LY2 |  B  |
+// -----------------------------------------------------------------------------
+// |  ESC |  Q  |  W  |  E  |  R  |  T  ||  Y  |  U   |  I  |  O  |  P  |  [   |
+// | CTRL |  A  |  S  |  D  |  F  |  G  ||  H  |  J   |  K  |  L  |  ;  |  '   |
+// | SHFT |  Z  |  X  |  C  |  V  |  B  ||  N  |  M   |  ,  |  .  |  /  | SHFT |
+//              |     | GUI | ALT | MB1 || SPC | LY1  | LY2 |  B  |
 			bindings = <
 	&kp ESC		&kp Q			&kp W		&kp E		&kp R	 	&kp T			&kp Y		&kp U		&kp I		&kp O		&kp P			&kp LBKT
 	&kp LCTRL	&kp A			&kp S		&kp D		&kp F		&kp G			&kp H		&kp J		&kp K		&kp L		&hm RCTRL SEMI	&kp SQT
 	&kp LSHFT	&hm LSHFT Z		&kp X		&kp C		&kp V		&kp B			&kp N		&kp M		&kp COMMA	&kp DOT		&hm RSHFT FSLH	&kp RSHFT
-								&mkp MB1	&kp LGUI	&kp RALT	&kp LCTRL		&lt 3 SPACE	&mo 1		&mo 2		&kp B
+								&mkp MB1	&kp LGUI	&kp RALT	&mkp MB1		&lt 3 SPACE	&mo 1		&mo 2		&kp B
 			>; 
 		};
 		num_layer { /* number */		/* L1 */
-// -----------------------------------------------------------------------------------------
-// |  `   |  1  |  2  |  3  |  4  |  5  |   |  6  |  7  |  8  |  9  |  0  |  -   |
-// | CTLR | F11 | F12 | DEL |RIGHT|     |   | BKSP| ENT |     |  -  |  =  |  =   |
-// | SHFT |  F1 |  F2 |  F3 |  F4 |  F5 |   |  F6 |  F7 |  F8 |  F9 | F10 | SHFT |
-//              |     | GUI | ALT | CTRL|   | SPC | LY1 | LY3 | LEFT|
+// ----------------------------------------------------------------------------
+// |  `   |  1  |  2  |  3  |  4  |  5  ||  6  |  7  |  8  |  9  |  0  |  -   |
+// | CTLR | F11 | F12 | DEL |RIGHT|     || BKSP| ENT |     |  -  |  =  |  =   |
+// | SHFT |  F1 |  F2 |  F3 |  F4 |  F5 ||  F6 |  F7 |  F8 |  F9 | F10 | SHFT |
+//              |     | GUI | ALT | MB1 || SPC | LY1 | LY3 | LEFT|
 			bindings = <
 	&kp GRAVE	&kp N1			&kp N2		&kp N3		&kp N4		&kp N5			&kp N6		&kp N7		&kp N8		&kp N9		&kp N0			&kp MINUS
 	&trans		&kp F11			&kp F12		&kp DEL	    &kp RIGHT   &none 			&kp BSPC	&kp RET		&none		&kp MINUS	&hm RCTRL EQUAL	&kp EQUAL
@@ -73,11 +73,11 @@
 			>;
 	};
 		sym_layer { /* Symbol */		/* L2 */
-// -----------------------------------------------------------------------------------------
-// |  ~   |  !  |  @  |  #  |  $  |  %  |   |  ^  |  &  |  *  |  (  |  )  |  _   |
-// | CTRL |  `  |  \  | DEL |RIGHT|     |   | BKSP| ENT |  '  |  [  |  ]  |  \   |
-// | SHFT |  ~  | "|" |  +  |  -  | LEFT|   |  =  | ENT |  "  |  {  |  }  | "|"  |
-//              |     | GUI | ALT | CTRL|   | SPC | LY1 | LY3 | LEFT|
+// ----------------------------------------------------------------------------
+// |  ~   |  !  |  @  |  #  |  $  |  %  ||  ^  |  &  |  *  |  (  |  )  |  _   |
+// | CTRL |  `  |  \  | DEL |RIGHT|     || BKSP| ENT |  '  |  [  |  ]  |  \   |
+// | SHFT |  ~  | "|" |  +  |  -  | LEFT||  =  | ENT |  "  |  {  |  }  | "|"  |
+//              |     | GUI | ALT | MB1 || SPC | LY1 | LY3 | LEFT|
 			bindings = <
 	&kp TILDE	&kp EXCL		&kp AT		&kp HASH	&kp DLLR	&kp PRCNT			&kp CARET	&kp AMPS	&kp STAR	&kp LPAR	&kp RPAR		&kp UNDER
 	&trans		&kp GRAVE		&kp BSLH	&kp DEL		&kp RIGHT	&none				&kp RBRC	&kp RET		&kp SQT		&kp LBKT	&hm RCTRL RBKT	&kp BSLH
@@ -86,11 +86,11 @@
 			>;
 		};
 		nav_layer { /* Navigation */	/* L3 */
-// -----------------------------------------------------------------------------------------
-// |  ESC | ESC | PGUP| END | MB1 | MB2 |   |PSCRN|     | TAB | SCUP|  UP | BKSP |
-// | CTRL | HOME| PGDN| DEL |RIGHT|     |   | BKSP| ENT | SCL | SCDN| SCR | ENT  |
-// | SHFT |     |     | INS |     | LEFT|   | DOWN| ENT |     |     | SHFT| SHFT |
-//              |     | GUI | ALT | CTRL|   | SPC | LY1 | LY3 | LEFT|
+// ----------------------------------------------------------------------------
+// |  ESC | ESC | PGUP| END | MB1 | MB2 ||PSCRN|     | TAB | SCUP|  UP | BKSP |
+// | CTRL | HOME| PGDN| DEL |RIGHT|     || BKSP| ENT | SCL | SCDN| SCR | ENT  |
+// | SHFT |     |     | INS |     | LEFT|| DOWN| ENT |     |     | SHFT| SHFT |
+//              |     | GUI | ALT | MB1 || SPC | LY1 | LY3 | LEFT|
 			bindings = <
 	&kp ESC		&kp ESC			&kp PGUP	&kp END		&mkp MB1	&mkp MB2			&kp PSCRN	&none		&kp TAB				&mwh SCROLL_UP		&kp UP				&kp BSPC
 	&trans		&kp HOME		&kp PGDN	&kp DEL		&kp RIGHT	&none				&kp BSPC 	&kp RET		&mwh SCROLL_LEFT	&mwh SCROLL_DOWN	&mwh SCROLL_RIGHT	&kp RET	
