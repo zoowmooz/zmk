@@ -1,7 +1,7 @@
 # Seeeduino XIAO BLE board configuration
 
-# Copyright (c) 2022 Peter Johanson
-# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
 
 config BOARD_ENABLE_DCDC
 	bool "Enable DCDC mode"

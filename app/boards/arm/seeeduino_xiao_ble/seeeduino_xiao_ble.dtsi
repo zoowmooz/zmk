@@ -1,0 +1,148 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <nordic/nrf52840_qiaa.dtsi>
+#include "arduino_pro_micro_pins.dtsi"
+
+/ {
+	model = "Seeeduino XIAO BLE";
+	compatible = "seeed,xiao_ble";
+
+	chosen {
+		zephyr,code-partition = &code_partition;
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+	};
+
+	/* These aliases are provided for compatibility with samples */
+	aliases {
+		led0 = &led0;
+		led1 = &led1;
+		led2 = &led2;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		led0: led_0 {
+			gpios = <&gpio0 26 0>;
+			label = "Red LED";
+		};
+		led1: led_1 {
+			gpios = <&gpio0 30 0>;
+			label = "Blue LED";
+		};
+		led2: led_2 {
+			gpios = <&gpio0 6 0>;
+			label = "Green LED";
+		};
+	};
+};
+
+&adc {
+	status = "okay";
+};
+
+&gpiote {
+	status = "okay";
+};
+
+&gpio0 {
+	status = "okay";
+};
+
+&gpio1 {
+	status = "okay";
+};
+
+&i2c0 {
+	compatible = "nordic,nrf-twi";
+	sda-pin = <4>;
+	scl-pin = <5>;
+};
+
+&uart0 {
+	compatible = "nordic,nrf-uarte";
+	current-speed = <115200>;
+	tx-pin = <43>;
+	rx-pin = <44>;
+};
+
+&spi2 {
+	compatible = "nordic,nrf-spi";
+	mosi-pin = <47>;
+	miso-pin = <46>;
+	sck-pin = <45>;
+};
+
+zephyr_udc0: &usbd {
+	compatible = "nordic,nrf-usbd";
+	status = "okay";
+};
+
+&qspi {
+        status = "okay";
+        sck-pin = <21>;
+        io-pins = <20>, <24>, <22>, <23>;
+        csn-pins = <25>;
+	// TODO: VERIFY THESE!
+        gd25q16: gd25q16@0 {
+                /* NOTE: Quad mode not supported as driver does not handle
+                 * QE bit setting in SR2. Ref. GD25Q16C, Rev 3.0, p. 12.
+                 */
+                compatible = "nordic,qspi-nor";
+                reg = <0>;
+                writeoc = "pp2o";
+                readoc = "read2io";
+                sck-frequency = <16000000>;
+                label = "GD25Q16";
+                jedec-id = [c8 40 15];
+                size = <2097152>;
+                has-dpd;
+                t-enter-dpd = <20000>;
+                t-exit-dpd = <20000>;
+        };
+};
+
+&flash0 {
+	/*
+	 * For more information, see:
+	 * http://docs.zephyrproject.org/latest/devices/dts/flash_partitions.html
+	 */
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		sd_partition: partition@0 {
+			label = "softdevice";
+			reg = <0x00000000 0x00026000>;
+		};
+
+		code_partition: partition@27000 {
+			label = "code_partition";
+			reg = <0x00027000 0x000c5000>;
+		};
+
+		/*
+		 * The flash starting at 0x000ec000 and ending at
+		 * 0x000f3fff is reserved for use by the application.
+		 */
+
+		/*
+		 * Storage partition will be used by FCB/LittleFS/NVS
+		 * if enabled.
+		 */
+		storage_partition: partition@ec000 {
+			label = "storage";
+			reg = <0x000ec000 0x00008000>;
+		};
+
+		boot_partition: partition@f4000 {
+			label = "adafruit_boot";
+			reg = <0x000f4000 0x0000c000>;
+		};
+	};
+};

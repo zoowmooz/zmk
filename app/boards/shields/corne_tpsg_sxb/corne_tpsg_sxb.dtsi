@@ -31,26 +31,10 @@ RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)  RC(2,6) RC(2,7)  RC(2,8) RC(2,9
 			, <&xiao_d 3  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 			;
 	};
-	vbatt {
-		compatible = "zmk,battery-voltage-divider";
-		label = "BATTERY";
-		io-channels = <&adc 7>;
-		power-gpios = <&gpio0 31 (GPIO_OPEN_DRAIN | GPIO_ACTIVE_LOW)>;
-		output-ohms = <1000000>;
-		full-ohms = <(1000000 + 510000)>;
-		status = "ok";
-	};
 	tpoint {
 		compatible = "zmk,trackpoint-strain-gauge";
 		label = "TRACKPOINT_TPSG";
 		io-channels = <&adc 1>,<&adc 4>;
-//		output-ohms = <1000>;
-//		full-ohms = <(1000 + 345)>;
-		power-gpios {
-		    label = "ADC_POWER";
-		    pin = <13>;
-		    flags = <0>;
-		    };
 		power-gpios = <&gpio0 16 0>;
 	};
 };
