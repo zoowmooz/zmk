@@ -1,10 +1,15 @@
-file_format: "1"
-id: seeeduino_xiao_ble_nrf52840
-name: Seeeduino Xiao BLE nRF52840
-type: board
+identifier: seeeduino_xiao_ble_nrf52840
+name: Seeeduino_Xiao_BLE
+type: mcu
 arch: arm
-outputs:
-  - usb
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - adc
+  - usb_device
   - ble
-url: https://wiki.seeedstudio.com/XIAO_BLE
-exposes: [seeeduino]
+  - ieee802154
+  - pwm
+  - watchdog

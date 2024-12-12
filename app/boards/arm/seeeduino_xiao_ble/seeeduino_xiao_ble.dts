@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2022 Peter Johanson
+ * Copyright (c) 2024 The ZMK Contributors
  *
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 /dts-v1/;
