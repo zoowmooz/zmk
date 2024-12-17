@@ -1,2 +1,0 @@
-west build -d build/right -b nice_nano -- -DSHIELD=wings42_sg_right
-west build -d build/left  -b nice_nano -- -DSHIELD=wings42_sg_left
