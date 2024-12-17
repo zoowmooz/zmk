@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023`nhh The ZMK Contributors
+ * Copyright (c) 2024 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -49,45 +49,29 @@ struct zmk_hid_mouse_report *zmk_tpsg_trans(int32_t x, int32_t y) {
     return mouse_report;
 
   }
-  if (zmk_usb_is_powered()) { // constant strain gauge power zmk_usb_get_conn_state CONFIG_ZMK_TPSG
-      if (0 < x) {
-          mouse_report->body.x =
-	    (int16_t)(((x * x) >> CONFIG_ZMK_TPSG_AXPC) + (x >> CONFIG_ZMK_TPSG_BXPC)); // Right
-      } else {
-	  x *= -1;
-          mouse_report->body.x = -1 *
-	    (int16_t)(((x * x) >> CONFIG_ZMK_TPSG_AXMC) + (x >> CONFIG_ZMK_TPSG_BXMC)); // Left
-      }
-      if (0 < y) {
-          mouse_report->body.y =
-	    (int16_t)(((y * y) >> CONFIG_ZMK_TPSG_AYPC) + (y >> CONFIG_ZMK_TPSG_BYPC)); // Down
-      } else {
-	  y *= -1;
-          mouse_report->body.y = -1 *
-	    (int16_t)(((y * y) >> CONFIG_ZMK_TPSG_AYMC) + (y >> CONFIG_ZMK_TPSG_BYMC)); // Up
-      }
-  } else { // reduce strain gauge power
-      if (0 < x) {
-          mouse_report->body.x =
-	    (int16_t)(((x * x) >> CONFIG_ZMK_TPSG_AXPR) + (x >> CONFIG_ZMK_TPSG_BXPR)); // Right
-      } else {
-	  x *= -1;
-          mouse_report->body.x = -1 *
-	    (int16_t)(((x * x) >> CONFIG_ZMK_TPSG_AXMR) + (x >> CONFIG_ZMK_TPSG_BXMR)); // Left
-      }
-      if (0 < y) {
-          mouse_report->body.y =
-	    (int16_t)(((y * y) >> CONFIG_ZMK_TPSG_AYPR) + (y >> CONFIG_ZMK_TPSG_BYPR)); // Down
-      } else {
-	  y *= -1;
-          mouse_report->body.y = -1 *
-	    (int16_t)(((y * y) >> CONFIG_ZMK_TPSG_AYMR) + (y >> CONFIG_ZMK_TPSG_BYMR)); // Up
-      }
-    }
-//#define CONFIG_ZMK_TPSG_GAIN_TUNING
+  
+  if (0 < x) {
+      mouse_report->body.x =
+	      (int16_t)(((x * x) >> CONFIG_ZMK_TPSG_AXPR) + (x >> CONFIG_ZMK_TPSG_BXPR)); // Right
+  } else {
+	    x *= -1;
+      mouse_report->body.x = -1 *
+	      (int16_t)(((x * x) >> CONFIG_ZMK_TPSG_AXMR) + (x >> CONFIG_ZMK_TPSG_BXMR)); // Left
+  }
+    
+  if (0 < y) {
+      mouse_report->body.y =
+	      (int16_t)(((y * y) >> CONFIG_ZMK_TPSG_AYPR) + (y >> CONFIG_ZMK_TPSG_BYPR)); // Down
+  } else {
+	    y *= -1;
+      mouse_report->body.y = -1 *
+	      (int16_t)(((y * y) >> CONFIG_ZMK_TPSG_AYMR) + (y >> CONFIG_ZMK_TPSG_BYMR)); // Up
+  }
+
 #ifdef CONFIG_ZMK_TPSG_GAIN_TUNING
   LOG_DBG("GAIN TUNING %6d %6d %6d %6d", x, y, mouse_report->body.x, mouse_report->body.y);
 #endif /* CONFIG_ZMK_TPSG_GAIN_TUNING */
+
   return mouse_report;
 }
 
