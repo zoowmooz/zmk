@@ -101,7 +101,7 @@
 		cnt_layer { /* Control */		/* L4 */
 			bindings = <
 	&trans		&none		&none		&none		&kp C_BRI_UP	&kp C_VOL_UP		&none			&none			&none			&none			&bt BT_CLR		&trans
-	&trans		&trans		&none		&none		&trans			&kp C_MUTE			&bt BT_SEL 0	&bt BT_SEL 1	&bt BT_SEL 2	&bt BT_SEL 3	&bt BT_SEL 4	&trans	
+	&trans		&trans		&none		&none		&trans			&kp C_MUTE			&bt BT_SEL 1	&bt BT_SEL 2	&bt BT_SEL 3	&bt BT_SEL 4	&bt BT_SEL 5	&trans	
 	&bootloader	&trans		&none		&none		&kp C_BRI_DN	&kp C_VOL_DN		&none			&none			&none			&none			&out OUT_TOG	&bootloader
 							&none		&none		&none			&none				&none			&none			&none			&none			
 			>;
