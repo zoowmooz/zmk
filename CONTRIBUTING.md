@@ -86,12 +86,18 @@ documentation to areas not currently covered are greatly appreciated.
 ZMK uses `prettier` to format documentation files. You can run prettier with `npm run prettier:format`.
 You can setup git to run prettier automatically when you commit by installing the pre-commit hooks: `pip3 install pre-commit`, `pre-commit install`.
 
+### Linting
+
+This repository utilizes ESLint for code linting to ensure consistent code style and identify potential errors or bugs early in the development process.
+
+You can run ESLint with `npm run lint` to verify your changes.
+
 ## Code Contributions
 
 ### Development Setup
 
 To get your development environment setup going, start at the
-[basic setup](https://zmk.dev/docs/dev-setup) docs, and make sure you can build and flash
+[basic setup](https://zmk.dev/docs/development/setup/) docs, and make sure you can build and flash
 your own locally built firmware.
 
 ### Formatting

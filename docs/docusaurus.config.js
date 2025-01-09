@@ -1,4 +1,6 @@
 const path = require("path");
+const theme = require("./src/theme/prism/themes/github");
+const darkTheme = require("./src/theme/prism/themes/github-dark-dimmed");
 
 module.exports = {
   title: "ZMK Firmware",
@@ -6,16 +8,34 @@ module.exports = {
   url: "https://zmk.dev",
   baseUrl: "/",
   favicon: "img/favicon.ico",
+  trailingSlash: "false",
   organizationName: "zmkfirmware", // Usually your GitHub org/user name.
   projectName: "zmk", // Usually your repo name.
-  plugins: [path.resolve(__dirname, "src/docusaurus-tree-sitter-plugin")],
+  plugins: [
+    "@docusaurus/theme-mermaid",
+    path.resolve(__dirname, "src/docusaurus-tree-sitter-plugin"),
+    path.resolve(__dirname, "src/hardware-metadata-collection-plugin"),
+    path.resolve(__dirname, "src/hardware-metadata-static-plugin"),
+    path.resolve(__dirname, "src/hardware-schema-typescript-plugin"),
+    path.resolve(__dirname, "src/setup-script-generation-plugin"),
+  ],
   themeConfig: {
     colorMode: {
       respectPrefersColorScheme: true,
     },
-    googleAnalytics: {
-      trackingID: "UA-145201102-2",
-      anonymizeIP: true,
+    prism: {
+      additionalLanguages: [
+        "bash",
+        "c",
+        "cmake",
+        "ini",
+        "linker-script",
+        "log",
+        "powershell",
+        "diff",
+      ],
+      theme,
+      darkTheme,
     },
     // sidebarCollapsible: false,
     navbar: {
@@ -38,6 +58,16 @@ module.exports = {
           position: "left",
         },
         {
+          to: "keymap-upgrader",
+          label: "Keymap Upgrader",
+          position: "left",
+        },
+        {
+          href: "https://zmk.studio/",
+          label: "ZMK Studio",
+          position: "right",
+        },
+        {
           href: "https://github.com/zmkfirmware/zmk",
           label: "GitHub",
           position: "right",
@@ -56,7 +86,7 @@ module.exports = {
             },
             {
               label: "Development",
-              to: "docs/development/setup/",
+              to: "docs/development/contributing/clean-room",
             },
           ],
         },
@@ -72,6 +102,10 @@ module.exports = {
               href:
                 (process.env.URL || "https://zmk.dev") +
                 "/community/discord/invite",
+            },
+            {
+              label: "Mastodon",
+              href: "https://fosstodon.org/@zmk",
             },
             {
               label: "Twitter",
@@ -103,7 +137,8 @@ module.exports = {
       copyright: `Copyright © ${new Date().getFullYear()} ZMK Project Contributors. <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" /></a>`,
     },
     algolia: {
-      apiKey: "75325855fc90356828fe212d38e5ca34",
+      appId: "USXLDJ14JE",
+      apiKey: "384a3bd2d50136c9dc8c8ddfe1b3a4b2",
       indexName: "zmkfirmware",
     },
   },
@@ -111,7 +146,13 @@ module.exports = {
     [
       "@docusaurus/preset-classic",
       {
+        googleAnalytics: {
+          trackingID: "UA-145201102-2",
+          anonymizeIP: true,
+        },
         docs: {
+          // Removed (for now) until we have content for each level of the generated breadcrumbs
+          breadcrumbs: false,
           // It is recommended to set document id as docs home page (`docs/` path).
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
@@ -121,6 +162,7 @@ module.exports = {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl: "https://github.com/zmkfirmware/zmk/edit/main/docs/",
+          blogSidebarCount: "ALL",
         },
         theme: {
           customCss: [
@@ -131,4 +173,13 @@ module.exports = {
       },
     ],
   ],
+  markdown: {
+    format: "detect",
+    mermaid: true,
+    mdx1Compat: {
+      comments: false,
+      admonitions: false,
+      headingIds: true,
+    },
+  },
 };

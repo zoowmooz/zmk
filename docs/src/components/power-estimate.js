@@ -4,9 +4,13 @@
  * SPDX-License-Identifier: MIT
  */
 
-import React from "react";
 import PropTypes from "prop-types";
-import { displayPower, underglowPower, zmkBase } from "../data/power";
+import {
+  displayPower,
+  underglowPower,
+  backlightPower,
+  zmkBase,
+} from "../data/power";
 import "../css/power-estimate.css";
 
 // Average monthly discharge percent
@@ -82,6 +86,7 @@ function PowerEstimate({
   batteryMilliAh,
   usage,
   underglow,
+  backlight,
   display,
 }) {
   if (!board || !board.powerSupply.type || !batteryMilliAh) {
@@ -180,6 +185,31 @@ function PowerEstimate({
     });
   }
 
+  if (backlight.backlightEnabled) {
+    let backlightMicroA =
+      ((board.powerSupply.outputVoltage - backlight.backlightVoltage) /
+        backlight.backlightResistance) *
+      1000000 *
+      backlight.backlightBrightness *
+      backlight.backlightQuantity;
+
+    if (
+      backlight.backlightBrightness > 0 &&
+      backlight.backlightBrightness < 1
+    ) {
+      backlightMicroA += backlightPower.pwmPower;
+    }
+
+    const backlightMicroW = backlightMicroA * voltageEquivalent;
+    const backlightUsage = backlightMicroW * (1 - usage.percentAsleep);
+
+    totalUsage += backlightUsage;
+    powerUsage.push({
+      title: "Backlight",
+      usage: backlightUsage,
+    });
+  }
+
   if (display.displayEnabled && display.displayType) {
     const { activePercent, active, sleep } = displayPower[display.displayType];
 
@@ -260,6 +290,7 @@ PowerEstimate.propTypes = {
   batteryMilliAh: PropTypes.number,
   usage: PropTypes.Object,
   underglow: PropTypes.Object,
+  backlight: PropTypes.Object,
   display: PropTypes.Object,
 };
 
